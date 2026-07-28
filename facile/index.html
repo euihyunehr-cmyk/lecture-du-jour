@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Lecture Facile",
+  "schemaVersion": 1,
+  "description": "초급(A1-A2) 프랑스어 읽기 페이지. Vikidia 등 쉬운 소스에서 짧은 글을 골라 본문·제시어·문법 짚기(관사/동사/형용사)·배경·용어 해설을 보여주고, 한↔불 사전 검색과 요약 칸을 제공. 매일 아침 자동 갱신."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture facile — 초급 프랑스어 읽기</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f4f6f2; --paper:#fffdf9; --ink:#23201b; --muted:#7c766c;
+    --line:#e2e6da; --accent:#4f7a4e; --accent-soft:#e6efe2;
+    --tag:#eef1ea; --tag-ink:#4f6146; --hl:#eef7cf;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 0 rgba(0,0,0,.02);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:30px;line-height:1.22;margin:0 0 14px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:16px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+  .body-fr{font-family:var(--serif);font-size:18px;line-height:1.85;}
+  .body-fr p{margin:0 0 14px;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .excerpt-note{font-size:12.5px;color:var(--muted);margin-top:6px;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin-bottom:14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  table.vocab{width:100%;border-collapse:collapse;font-size:14.5px;}
+  table.vocab td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.vocab tr td:first-child{font-family:var(--serif);font-weight:600;width:48%;color:var(--accent);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .glossary dt{font-family:var(--serif);font-weight:700;margin-top:12px;color:var(--accent);}
+  .glossary dd{margin:2px 0 0;font-size:14px;}
+  .gram h4{font-family:var(--serif);font-size:16.5px;color:var(--accent);margin:18px 0 6px;}
+  .gram h4:first-child{margin-top:0;}
+  .gram p{font-size:14px;margin:0 0 6px;}
+  .gram ul{margin:0 0 6px;padding-left:20px;font-size:14px;line-height:1.75;}
+  .gram i{font-family:var(--serif);font-style:italic;}
+  .gram u{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:2px;}
+  .gram-bonus{background:var(--accent-soft);border-radius:9px;padding:10px 13px;font-size:13.5px;margin-top:14px;}
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#3f6440;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:100px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Lecture facile<small>매일 한 편 · 초급 프랑스어 읽기</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-28-ecole">
+        <div class="kicker">Niveau débutant · École &amp; vie quotidienne</div>
+        <h1 class="title">L'école</h1>
+        <div class="meta">
+          <span><b>출처</b> Wikimini (어린이가 쓰는 백과)</span>
+          <span><b>난이도</b> 초급 (A1–A2)</span>
+          <span><b>라이선스</b> CC BY-SA</span>
+          <span><a href="https://fr.wikimini.org/wiki/%C3%89cole" target="_blank" rel="noopener">원문 보기 →</a></span>
+        </div>
+
+        <div class="why">
+          <span class="lab">오늘 이 글을 고른 이유 ·</span>
+          '학교'는 아이·어른 모두 매일 쓰는 주제라 단어가 전부 <b>실생활 회화 어휘</b>예요 — 배우다·과목·숙제·선생님·교실. 게다가 회화에서 진짜 많이 쓰는 <b>대명사 on</b>과 <b>y</b>, 의무 표현 <i>il faut</i>가 그대로 나와서, 아래 <b>문법 짚기</b>로 자연스럽게 익힐 수 있어요.
+        </div>
+
+        <div class="sect-h">본문 (쉬운 글)</div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 전체 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.7">느리게</option><option value="0.85" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <div class="body-fr">
+          <p>Une <mark>école</mark> est un établissement qui donne un <mark>enseignement</mark>. On y accueille des enfants, des adolescents ou même des adultes.</p>
+
+          <p>On y <mark>apprend</mark> beaucoup de choses. On <mark>s'amuse</mark> aussi, et parfois on déteste ça ! Mais c'est important d'y <mark>aller</mark>, pour apprendre et, plus tard, avoir un <mark>métier</mark>.</p>
+
+          <p>De trois à six ans, c'est l'<mark>école maternelle</mark>. On y apprend les premières lettres et les premiers chiffres.</p>
+
+          <p>À l'<mark>école primaire</mark>, on apprend plein de choses. Les <mark>matières</mark> changent selon les pays : <mark>mathématiques</mark>, français, histoire, géographie… Souvent, il y a un <mark>maître</mark> ou une maîtresse pour toute la classe.</p>
+
+          <p>L'école secondaire se situe entre l'école primaire et l'université. En principe, il faut changer de salle à chaque cours. On appelle les <mark>professeurs</mark> « Madame » ou « Monsieur ».</p>
+
+          <p>Il y a plus de matières, donc plus de <mark>devoirs</mark> et de contrôles. En France, l'école secondaire, c'est le <mark>collège</mark>, puis le <mark>lycée</mark>.</p>
+        </div>
+        <p class="excerpt-note">※ 학습용 발췌본입니다. 전체 내용은 위 원문 링크에서 확인하세요. · 🔊 문단을 클릭하면 그 문단만 들려줘요.</p>
+      </article>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">제시어 · 오늘의 단어</div>
+        <table class="vocab">
+          <tr><td>une école</td><td>학교</td></tr>
+          <tr><td>apprendre</td><td>배우다</td></tr>
+          <tr><td>un enseignement</td><td>교육, 가르침</td></tr>
+          <tr><td>s'amuser</td><td>재미있게 놀다, 즐기다</td></tr>
+          <tr><td>un métier</td><td>직업, 일</td></tr>
+          <tr><td>une classe</td><td>반, 학급 (교실)</td></tr>
+          <tr><td>une matière</td><td>(수업) 과목</td></tr>
+          <tr><td>les mathématiques</td><td>수학</td></tr>
+          <tr><td>un maître / une maîtresse</td><td>(초등) 선생님</td></tr>
+          <tr><td>un professeur</td><td>선생님, 교사</td></tr>
+          <tr><td>un cours</td><td>수업, 강의</td></tr>
+          <tr><td>les devoirs</td><td>숙제</td></tr>
+          <tr><td>un contrôle</td><td>(학교) 쪽지시험, 평가</td></tr>
+          <tr><td>l'école maternelle</td><td>유치원 (만 3–6세)</td></tr>
+          <tr><td>le collège / le lycée</td><td>중학교 / 고등학교</td></tr>
+        </table>
+        <div class="tags" style="margin-top:14px;">
+          <span class="tag">초급</span><span class="tag">일상생활</span><span class="tag">학교·교육</span><span class="tag">대명사 on·y</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">문법 짚기 · 본문 속 문법</div>
+        <div class="gram">
+          <h4>① 대명사 <i>on</i> — 회화의 핵심</h4>
+          <p><i>on</i>은 '우리' 또는 '사람들(일반)'을 뜻하고, 동사는 <b>3인칭 단수</b>(il/elle처럼) 형태를 써요. 말할 때 <i>nous</i>보다 <i>on</i>을 훨씬 자주 씁니다.</p>
+          <ul>
+            <li><i>On <u>apprend</u> beaucoup de choses.</i> — 우리는(사람들은) 많은 것을 배운다.</li>
+            <li><i>On <u>appelle</u> les professeurs « Madame ».</i> — 선생님을 'Madame'이라고 부른다.</li>
+          </ul>
+
+          <h4>② 대명사 <i>y</i> — '그곳에 / 거기'</h4>
+          <p><i>y</i>는 <i>à + 장소</i>를 대신하고, <b>동사 앞</b>에 놓여요.</p>
+          <ul>
+            <li><i>On <u>y</u> apprend beaucoup.</i> = on apprend <i>à l'école</i>. — 거기서 많이 배운다.</li>
+            <li><i>C'est important d'<u>y</u> aller.</i> — 거기에 가는 게 중요하다.</li>
+            <li>일상 표현: <i>J'<u>y</u> vais !</i> — 나 갈게! / 나 간다!</li>
+          </ul>
+
+          <h4>③ <i>il faut</i> + 동사원형 — '~해야 한다'</h4>
+          <p><i>il faut</i>는 의무·필요를 나타내요. 뒤에는 언제나 <b>동사 원형(infinitif)</b>.</p>
+          <ul>
+            <li><i>Il faut <u>changer</u> de salle à chaque cours.</i> — 수업마다 교실을 바꿔야 한다.</li>
+            <li><i>Il faut <u>appeler</u> les professeurs « Monsieur ».</i> — 선생님을 'Monsieur'라고 불러야 한다.</li>
+          </ul>
+
+          <h4>④ <i>plus de</i> + 명사 — '더 많은 ~'</h4>
+          <ul>
+            <li><i>Il y a <u>plus de</u> matières, donc <u>plus de</u> devoirs.</i> — 과목이 더 많아서 숙제도 더 많다.</li>
+          </ul>
+
+          <p class="gram-bonus">💡 학교 표현 — 새 학년이 시작되는 '개학'은 <i>la rentrée</i>. 개학하는 친구에게 <i>« Bonne rentrée ! »</i>(새 학기 잘 보내!)라고 해요. 숙제가 있으면 <i>« J'ai des devoirs. »</i>.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">참고 · 프랑스의 학교</div>
+        <p style="font-size:14.5px;margin:0 0 12px">프랑스 아이들은 보통 <i>école maternelle</i>(유치원, 3–6세) → <i>école primaire</i>(초등학교) → <i>collège</i>(중학교) → <i>lycée</i>(고등학교) → <i>université</i>(대학) 순서로 올라가요. 초등학교 학년은 CP, CE1, CE2, CM1, CM2로 불러요.</p>
+        <p style="font-size:14.5px;margin:0">초등학교에서는 보통 <b>한 명의 담임(maître·maîtresse)</b>이 반 전체를 가르쳐요. 하지만 중학교부터는 과목마다 <b>교실을 옮기고</b>, 여러 명의 <i>professeur</i>를 만나며, 선생님을 'Madame'·'Monsieur'라고 부른답니다.</p>
+      </section>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">용어 풀이</div>
+        <dl class="glossary">
+          <dt>l'école maternelle</dt><dd>만 3–6세 아이들이 다니는 학교(유치원). 글자·숫자를 처음 배워요.</dd>
+          <dt>un maître / une maîtresse</dt><dd>초등학교에서 반을 맡는 담임 선생님.</dd>
+          <dt>les devoirs</dt><dd>집에서 해 오는 숙제. (항상 복수형으로 써요.)</dd>
+          <dt>un contrôle</dt><dd>학교에서 보는 (작은) 시험·평가.</dd>
+          <dt>le collège</dt><dd>프랑스의 중학교(대략 11–15세). 그 다음이 lycée(고등학교).</dd>
+        </dl>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>Les repas — 식사 (일상생활) · <a href="https://fr.vikidia.org/wiki/Repas" target="_blank" rel="noopener">원문</a></li>
+          <li>Le chat — 고양이 (동물) · <a href="https://fr.vikidia.org/wiki/Chat" target="_blank" rel="noopener">원문</a></li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Lecture facile. All rights reserved.<br>원문은 Wikimini(CC BY-SA)의 저작물이며 학습용으로 발췌·해설했습니다. 매일 아침 자동 갱신.</div>
+    </main>
+
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 본문에서 <b>단어를 드래그</b>하면 바로 검색돼요. (불불 뜻풀이 위 / 한국어 뜻 아래)</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 요약 연습</h3>
+        <div class="sum-lab">① 한국어로 2–3줄 요약</div>
+        <textarea class="sum" id="sumKo" placeholder="이 글의 핵심을 우리말로…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">② 프랑스어로 간단히 (facultatif)</div>
+        <textarea class="sum" id="sumFr" placeholder="Écris 1–2 phrases simples en français…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 이 문단을 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('sumKo_'+id)||''; fr.value=localStorage.getItem('sumFr_'+id)||''; }catch(e){} }
+  function count(){ cKo.textContent=ko.value.length+'자'; var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0; cFr.textContent=m+' mots'; }
+  function save(){ try{ localStorage.setItem('sumKo_'+id,ko.value); localStorage.setItem('sumFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','관용구·연어면 뉘앙스 한 줄 추가.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2')
+      .replace(/\[\[([^\]]*)\]\]/g,'$1')
+      .replace(/'''?/g,'').replace(/<[^>]+>/g,'')
+      .replace(/\s+/g,' ').trim();
+  }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var frs=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(frs){ frs=frs.split(/\n==\s*\{\{langue\|/)[0]; } else { frs=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=frs.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버 불한</a> · '+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>
