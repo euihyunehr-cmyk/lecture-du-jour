@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Lecture Du Jour",
+  "schemaVersion": 1,
+  "description": "매일 아침 프랑스 매체(The Conversation France, Futura 등)에서 기사 한 편을 골라 제목·출처·선정이유·본문 발췌·제시어(연어)·배경지식·고유명사 해설을 보여주고, 한/불 요약 작성 칸과 사전·번역기 링크를 제공하는 프랑스어 읽기 페이지."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lecture du jour — 매일 한 편 프랑스어 읽기</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f6f4ef; --paper:#fffdf9; --ink:#23201b; --muted:#7c766c;
+    --line:#e6e0d4; --accent:#7a5c3e; --accent-soft:#efe7db;
+    --tag:#eef1ea; --tag-ink:#4f6146; --hl:#fdf2c9;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 0 rgba(0,0,0,.02);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:30px;line-height:1.22;margin:0 0 14px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:16px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+  .body-fr{font-family:var(--serif);font-size:17.5px;line-height:1.72;}
+  .body-fr p{margin:0 0 15px;}
+  .body-fr .note{font-family:var(--sans);font-size:12.5px;color:var(--muted);font-style:italic;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .excerpt-note{font-size:12.5px;color:var(--muted);margin-top:6px;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin-bottom:14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  table.vocab{width:100%;border-collapse:collapse;font-size:14.5px;}
+  table.vocab td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;}
+  table.vocab tr td:first-child{font-family:var(--serif);font-weight:600;width:48%;color:var(--accent);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .glossary dt{font-family:var(--serif);font-weight:700;margin-top:12px;color:var(--accent);}
+  .glossary dd{margin:2px 0 0;font-size:14px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#63482f;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:110px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Lecture du jour<small>매일 한 편 프랑스어 읽기</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-28-voyage-ia">
+        <div class="kicker">Tech · Voyage</div>
+        <h1 class="title">Vous pensiez encore organiser vos voyages comme avant ? Attendez de voir ce qui vient</h1>
+        <div class="meta">
+          <span><b>출처</b> Futura (Planète · Voyage)</span>
+          <span><b>필자</b> Futura avec ETX Daily Up</span>
+          <span><b>게재</b> 2025-04-17</span>
+          <span><a href="https://www.futura-sciences.com/planete/actualites/intelligence-artificielle-vous-pensiez-encore-organiser-vos-voyages-comme-avant-attendez-voir-ce-vient-121272/" target="_blank" rel="noopener">원문 전문 보기 →</a></span>
+        </div>
+
+        <div class="why">
+          <span class="lab">오늘 이 기사를 고른 이유 ·</span>
+          '여행 준비'와 'AI'는 요즘 대화에서 늘 나오는 주제라, 여기 표현을 <b>일상 대화·통역에서 그대로 재활용</b>할 수 있어요. <i>planifier / réserver</i>(계획·예약), <i>en temps réel</i>(실시간), <i>gagner du terrain</i>(세를 넓히다), <i>emboîter le pas à</i>(뒤따르다), <i>à grande échelle</i>(대규모로) 같은 고빈도 연어가 풍부하고, 기업·기술 뉴스에 자주 쓰는 실용 어휘가 많습니다. 문학적 묘사가 아니라 정보·경제 기사라 문장 구조도 깔끔해요.
+        </div>
+
+        <div class="sect-h">본문 (발췌)</div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 전체 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.8">느리게</option><option value="0.9" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <div class="body-fr">
+          <p>L'intelligence artificielle accompagne et transforme aussi le secteur du tourisme. En quelques clics sur la toile, planifier, réserver et personnaliser son voyage devient <mark>un jeu d'enfant</mark>. Portés par des startups comme Mindtrip et des géants comme Google ou Booking.com, ces assistants d'intelligence artificielle <mark>gagnent du terrain</mark> dans toute l'industrie du tourisme, même si <mark>l'adoption</mark> de ces outils reste progressive dans les petites agences de quartier.</p>
+
+          <p>Ils peuvent réaliser beaucoup des tâches confiées jusqu'ici à un agent de voyage humain, mais aussi accompagner le client <mark>en déplacement</mark> et faire des suggestions <mark>en temps réel</mark> : les assistants IA sont <mark>en passe de</mark> révolutionner l'industrie du tourisme, sur internet et au-delà.</p>
+
+          <p>Une envie de Mexique, sans idée claire sur la région, l'itinéraire ou la période ? En quelques secondes, l'intelligence artificielle générative de Mindtrip crée un parcours <mark>sur mesure</mark> avec suggestions d'hôtels, restaurants, visites et activités, sur simple requête écrite. Une fois les options choisies, toutes les étapes du voyage peuvent être réservées, directement dans l'application ou sur des sites partenaires.</p>
+
+          <p>Les acteurs historiques de la réservation sur internet commencent à leur <mark>emboîter le pas</mark>, <mark>avec plus ou moins d'entrain</mark>. Expedia a lancé en 2024 son assistant Romie, mais seulement pour certaines étapes de planification, principalement pour les voyages en groupe.</p>
+
+          <p>« En cas de changements <mark>en temps réel</mark>, d'itinéraire, d'avis, de conditions de sécurité, vous n'avez pas besoin d'appeler quelqu'un. Vous le saisissez juste dans l'appli », qui reconfigure votre voyage instantanément, explique un spécialiste de l'économie du tourisme.</p>
+
+          <p>Même si les agents IA sont déjà disponibles, leur adoption <mark>à grande échelle</mark> va être lente, car l'industrie du tourisme est surtout composée de petits acteurs — hôtels, tour-opérateurs et agences régionales — qui n'ont pas les infrastructures pour intégrer l'IA. À terme, les grandes plateformes historiques pourraient <mark>tirer leur épingle du jeu</mark> grâce à leurs vastes ressources et à leur base de clients.</p>
+        </div>
+        <p class="excerpt-note">※ 학습용 발췌본입니다. 전체 내용은 위 원문 링크에서 확인하세요. (형광펜 표현은 아래 제시어에서 해설) · 🔊 문단을 클릭하면 그 문단만 들려줘요.</p>
+      </article>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">제시어 · 표현과 연어</div>
+        <table class="vocab">
+          <tr><td>gagner du terrain</td><td>세를 넓히다, 확산되다</td></tr>
+          <tr><td>un jeu d'enfant</td><td>아주 쉬운 일, 식은 죽 먹기</td></tr>
+          <tr><td>planifier / réserver un voyage</td><td>여행을 계획하다 / 예약하다</td></tr>
+          <tr><td>sur mesure</td><td>맞춤형의, 오더메이드의</td></tr>
+          <tr><td>en temps réel</td><td>실시간으로</td></tr>
+          <tr><td>être en passe de + inf.</td><td>막 ~하려는 참이다, ~할 태세다</td></tr>
+          <tr><td>emboîter le pas à qqn</td><td>~의 뒤를 따르다, 동참하다</td></tr>
+          <tr><td>avec plus ou moins d'entrain</td><td>다소 내키지 않게, 열의의 차이는 있지만</td></tr>
+          <tr><td>en déplacement</td><td>이동 중에, 출장 중에</td></tr>
+          <tr><td>à grande échelle</td><td>대규모로</td></tr>
+          <tr><td>tirer son épingle du jeu</td><td>(어려운 상황에서) 유리하게 빠져나오다, 잘 헤쳐 나가다</td></tr>
+          <tr><td>les acteurs historiques</td><td>(업계의) 기존 사업자, 터줏대감 격 기업</td></tr>
+        </table>
+        <div class="tags" style="margin-top:14px;">
+          <span class="tag">기술</span><span class="tag">인공지능</span><span class="tag">여행</span><span class="tag">관광산업</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">참고 배경지식</div>
+        <p style="font-size:14.5px;margin:0 0 12px"><b>생성형 AI(IA générative)와 여행</b>. 이 기사는 챗봇 형태의 AI 비서가 여행 준비 방식을 바꾸고 있다는 내용이에요. 사용자가 "멕시코에 가고 싶다"처럼 한 줄만 입력하면, AI가 지역·일정·호텔·식당·볼거리까지 <i>맞춤형(sur mesure)</i> 여행 코스를 몇 초 만에 짜 주고, 앱 안에서 바로 예약(réserver)까지 이어집니다. 스타트업 Mindtrip·Vacay, 기업 전용 Navan이 이 분야를 개척했고, Google(Gemini)·OpenAI(Operator)·Anthropic(Claude) 같은 대형 AI 업체도 여행 비서 기능을 밀고 있어요.</p>
+        <p style="font-size:14.5px;margin:0 0 12px">기존 예약 플랫폼(<b>acteurs historiques</b>)도 뒤늦게 <i>뒤를 따르고(emboîter le pas)</i> 있습니다. Expedia는 2024년 그룹 여행용 비서 'Romie'를, Booking.com은 운하가 보이는 암스테르담 호텔처럼 <i>일상 언어(en langage courant)</i>로 물어보면 추천해 주는 'SmartFilter'를 내놨어요. Club Med는 WhatsApp으로 실시간 문의에 답하는 기능을 도입해, 예전엔 평균 1시간 30분 걸리던 응대를 즉시 처리한다고 합니다.</p>
+        <p style="font-size:14.5px;margin:0">다만 관광업계는 소규모 사업자(작은 호텔·투어 오퍼레이터·지역 여행사)가 많아, AI의 <i>대규모 도입(à grande échelle)</i>은 더딜 거라는 전망도 나와요. 반면 소비자는 이미 ChatGPT 사용에 익숙해, 앞으로 2년간 '디지털 여행사'가 빠르게 부상할 거라는 관측이 있습니다. 인간 여행사(agent de voyage)는 부유층 고객은 계속 잡겠지만, 그 외 시장에서는 입지가 흔들릴 것으로 보입니다.</p>
+      </section>
+
+      <section class="card">
+        <div class="sect-h" style="margin-top:0">고유명사 · 용어 풀이</div>
+        <dl class="glossary">
+          <dt>Mindtrip / Vacay / Navan</dt><dd>생성형 AI로 여행 일정을 짜 주는 신생 스타트업들. Navan은 기업(출장) 전용 서비스.</dd>
+          <dt>Booking.com · Expedia</dt><dd>인터넷 여행 예약의 기존 강자(acteurs historiques). 각각 'SmartFilter', 'Romie'라는 AI 기능을 도입.</dd>
+          <dt>IA générative</dt><dd>생성형 인공지능. 글·이미지 등 새 콘텐츠를 만들어 내는 AI로, 여기서는 여행 코스를 자동 생성.</dd>
+          <dt>Gemini / Operator / Claude</dt><dd>각각 Google · OpenAI · Anthropic의 AI 비서. 여행 준비 등 실생활 작업을 돕는 기능을 확대 중.</dd>
+          <dt>Club Med</dt><dd>프랑스의 대형 리조트·바캉스 그룹. WhatsApp 기반 실시간 고객 응대 기능을 시범 도입.</dd>
+          <dt>agent de voyage</dt><dd>여행사 직원·여행 상담원. AI 비서가 이들의 업무를 상당 부분 대체할 수 있다고 기사는 진단.</dd>
+        </dl>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>Dette de sommeil : de lourdes conséquences pour notre santé (건강·수면) — <a href="https://theconversation.com/dette-de-sommeil-de-lourdes-consequences-pour-notre-sante-134129" target="_blank" rel="noopener">원문</a></li>
+          <li>늑대에 대한 감정 (환경·사회) — <a href="https://theconversation.com/comprendre-la-diversite-des-emotions-suscitees-par-le-loup-en-france-227737" target="_blank" rel="noopener">원문</a></li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Lecture du jour. All rights reserved.<br>기사 원문은 각 매체(The Conversation France, Futura 등)의 저작물이며 학습용으로 발췌·해설했습니다. 매일 아침 자동 갱신.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 본문에서 <b>단어를 드래그</b>하면 바로 검색돼요. 결과가 이 칸에 나옵니다. (인터넷 연결 시 누구나 사용 가능)</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 요약 연습</h3>
+        <div class="sum-lab">① 한국어로 3줄 요약</div>
+        <textarea class="sum" id="sumKo" placeholder="이 기사의 핵심을 우리말 3문장으로…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">② 프랑스어로 다시 요약 (résumé)</div>
+        <textarea class="sum" id="sumFr" placeholder="Résumez l'article en français en 3–4 phrases…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  // date
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) — 공유 페이지에서도 누구나 사용 가능 =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 이 문단을 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  // external dictionary URL builders
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      papago:'https://papago.naver.com/?sk=fr&tk=ko&st='+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  // selection popup
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  // summaries persist per article id
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('sumKo_'+id)||''; fr.value=localStorage.getItem('sumFr_'+id)||''; }catch(e){} }
+  function count(){
+    cKo.textContent=ko.value.length+'자';
+    var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0;
+    cFr.textContent=m+' mots';
+  }
+  function save(){ try{ localStorage.setItem('sumKo_'+id,ko.value); localStorage.setItem('sumFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page KO<->FR dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  // (1) Cowork AI dictionary — best quality, works inside Cowork for the owner
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','관용구·연어면 뉘앙스 한 줄 추가.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+
+  // (2) online dictionary — works in any normal browser. Combines Google KO gloss + Wiktionnaire FR definitions
+  function stripTags(s){ var t=document.createElement('div'); t.innerHTML=String(s); return (t.textContent||t.innerText||'').replace(/\s+/g,' ').trim(); }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');   // drop templates (a few passes for nesting)
+    return s
+      .replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2')
+      .replace(/\[\[([^\]]*)\]\]/g,'$1')
+      .replace(/'''?/g,'')
+      .replace(/<[^>]+>/g,'')
+      .replace(/\s+/g,' ').trim();
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var fr=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(fr){ fr=fr.split(/\n==\s*\{\{langue\|/)[0]; } else { fr=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=fr.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    // 불불 (French-French, Wiktionnaire) — 위
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    // 불한 / 한불 (뜻) — 아래
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    // 네이버 사전 바로가기(브라우저 내 결과는 CORS로 불가 → 새 탭)
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 불↔한</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>
