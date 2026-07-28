@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Interprétation du jour",
+  "schemaVersion": 1,
+  "description": "매일 한 주제(주간 대주제 로테이션)를 양방향(한↔불) 통역 훈련용으로 제공하는 페이지. 배경 브리핑·숫자 치트시트, 핵심 찌르기(l'essentiel), 상황 맞춤 동사·연어(오용 대조), 입에 붙이기 청크(낭독), 노트테이킹 모범, 양방향 실전 세그먼트로 구성. 낭독·사전 검색·요약 저장 기능 포함."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interprétation du jour — 매일 한 주제 양방향 통역 훈련</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f2f4f6; --paper:#ffffff; --ink:#1c2530; --muted:#6b7683;
+    --line:#e2e7ec; --accent:#1f5f8b; --accent2:#b23a48; --accent-soft:#e7eef4;
+    --tag:#eaf0f2; --tag-ink:#28506b; --hl:#fff2b8; --ok:#1f7a54; --bad:#b23a48;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,'D2Coding',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:27px;line-height:1.25;margin:0 0 12px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:14px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .dir{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle;}
+  .dir.ab{background:#e7eef4;color:#1f5f8b;} .dir.ba{background:#f5e9ea;color:#b23a48;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px;}
+  .sect-h .n{font-family:var(--sans);font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sect-sub{font-size:12.5px;color:var(--muted);margin:8px 0 12px;}
+  .goal{font-size:12px;color:var(--accent2);font-weight:600;}
+  .body-fr{font-family:var(--serif);font-size:17px;line-height:1.7;}
+  .body-fr p{margin:0 0 13px;}
+  .ko{font-size:14.5px;color:#38424e;background:#f7f9fa;border-left:3px solid var(--line);padding:10px 13px;border-radius:0 8px 8px 0;margin:6px 0 0;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin:6px 0 14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  table.grid{width:100%;border-collapse:collapse;font-size:14px;}
+  table.grid td,table.grid th{padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  table.grid th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  table.cheat tr td:first-child{font-family:var(--mono);font-weight:700;color:var(--accent);white-space:nowrap;width:32%;}
+  table.verb tr td:nth-child(1){font-weight:600;width:30%;}
+  table.verb tr td:nth-child(2){font-family:var(--serif);color:var(--ok);width:42%;}
+  table.verb tr td:nth-child(3){font-family:var(--serif);color:var(--bad);font-size:13px;}
+  table.chunk tr td:first-child{font-family:var(--serif);color:var(--accent);width:52%;}
+  .drill{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-size:14.5px;line-height:1.62;}
+  .drill.fr{font-family:var(--serif);font-size:16px;}
+  .task{font-size:12.5px;color:var(--accent2);font-weight:600;margin:9px 0 4px;}
+  details.reveal{margin-top:10px;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  details.reveal>summary{cursor:pointer;list-style:none;padding:9px 13px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);}
+  details.reveal>summary::-webkit-details-marker{display:none}
+  details.reveal>summary::before{content:'▸ ';}
+  details.reveal[open]>summary::before{content:'▾ ';}
+  details.reveal .rv{padding:12px 15px;font-size:14.5px;line-height:1.6;}
+  details.reveal .rv .fr{font-family:var(--serif);font-size:15.5px;}
+  details.reveal .rv .lab{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin:8px 0 2px;}
+  pre.note{font-family:var(--mono);font-size:13px;line-height:1.55;background:#12222f;color:#e7eef4;border-radius:10px;padding:14px 16px;overflow:auto;white-space:pre;}
+  .checklist{list-style:none;padding:0;margin:10px 0 0;font-size:13.5px;}
+  .checklist li{padding:4px 0 4px 24px;position:relative;}
+  .checklist li::before{content:'☐';position:absolute;left:0;color:var(--accent);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .routine{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .routine span{background:var(--tag);color:var(--tag-ink);border-radius:8px;padding:6px 11px;font-size:12.5px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#18475f;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:96px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Interprétation du jour<small>매일 한 주제 · 양방향 통역 훈련</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-28-energie-nucleaire">
+        <div class="kicker">주간 대주제 · 07/26–08/01</div>
+        <h1 class="title">원전·에너지 &amp; 탄소중립 — Nucléaire, énergie &amp; neutralité carbone</h1>
+        <div class="meta">
+          <span><b>순차(AB·BA)</b> 원전 건설·해체, 에너지(기술 위주)</span>
+          <span><b>동시</b> 탄소중립·지구온난화·관광·오버투어리즘</span>
+          <span><b>방향</b> 한↔불 양방향</span>
+        </div>
+        <div class="why">
+          <span class="lab">오늘의 훈련 초점 ·</span>
+          박수경 교수님 <i>"핵심으로 한 번에"</i> → ②핵심 찌르기, 이유희 교수님 <i>"노트 즉시 개선"</i> → ⑤노트테이킹. 그리고 자주 지적받는 <b>상황에 안 맞는 동사</b>는 ③에서 오용 대조로, <b>표현 자동화</b>는 ④에서 낭독 반복으로 잡습니다.
+        </div>
+        <div class="task">오늘 체크리스트 (루틴 60분)</div>
+        <div class="routine">
+          <span>① 사설 요약 20′ (한1·불1 → 한글로)</span>
+          <span>② 핵심 30″ 말하기 + 녹음</span>
+          <span>③ 집중력 인터벌 통역 (이번 주 35–40′)</span>
+          <span>④ 노트 개선 + 오답노트</span>
+        </div>
+      </article>
+
+      <!-- 1. 배경 브리핑 + 치트시트 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">1</span> 배경지식 브리핑 &amp; 숫자 치트시트</div>
+        <div class="sect-sub">주제 배경을 한/불로 잡고, 재등장 확률 높은 수치·고유명사를 미리 입에 올려둔다. <span class="goal">→ 분야 배경지식</span></div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 전체 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.8">느리게</option><option value="0.9" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <div class="body-fr">
+          <p>La France est le pays le plus nucléarisé au monde : l'atome fournit environ <mark>70 %</mark> de son électricité, avec 57 réacteurs dont la production a atteint 373 TWh en 2025. Après la fermeture de Fessenheim en 2020, le pays a opéré un revirement : la <mark>relance du nucléaire</mark> prévoit six réacteurs EPR2 sur trois sites — Penly, Gravelines et Bugey — pour un coût réévalué à 72,8 milliards d'euros. Le premier chantier, à Penly, doit démarrer en 2029 pour une <mark>mise en service</mark> en 2038.</p>
+          <p>L'objectif reste la <mark>neutralité carbone à l'horizon 2050</mark>. La Corée, elle, tire environ 31 % de son électricité du nucléaire et vise une <mark>réduction de 40 % de ses émissions</mark> d'ici 2030 par rapport à 2018, tout en dépendant encore largement du charbon et du gaz.</p>
+        </div>
+        <div class="ko">프랑스는 세계 최고 원자력 의존국으로 전력의 약 70%를 원전에서 얻으며, 57기 원자로가 2025년 373TWh를 생산했다. 2020년 페센하임 폐쇄 후 노선을 전환해, 원전 재도약(relance) 정책으로 3개 부지(Penly·Gravelines·Bugey)에 EPR2 6기를 짓기로 했고 비용은 728억 유로로 상향됐다. 첫 공사 Penly는 2029년 착공·2038년 가동 예정. 목표는 2050년 탄소중립. 한국은 전력의 약 31%를 원전에서 얻으며 2030년까지 2018년 대비 40% 감축을 목표로 하지만 여전히 석탄·가스 의존도가 높다.</div>
+        <table class="grid cheat" style="margin-top:14px">
+          <tr><th>수치·고유명사</th><th>의미 (한/불)</th></tr>
+          <tr><td>~70 %</td><td>프랑스 원전 전력 비중 · la part du nucléaire en France</td></tr>
+          <tr><td>373 TWh (2025)</td><td>프랑스 원자력 생산량 · la production nucléaire</td></tr>
+          <tr><td>57 réacteurs</td><td>가동 중 원자로 기수 · le parc nucléaire</td></tr>
+          <tr><td>6 EPR2</td><td>신형 원자로 6기 (Penly·Gravelines·Bugey)</td></tr>
+          <tr><td>72,8 Md€</td><td>신규 원전 건설 비용 · le coût réévalué</td></tr>
+          <tr><td>2038</td><td>첫 EPR2 가동 예정 · mise en service</td></tr>
+          <tr><td>2050</td><td>탄소중립 목표 · la neutralité carbone</td></tr>
+          <tr><td>31 % / −40 %</td><td>한국 원전 비중 / 2030 감축목표(2018 대비)</td></tr>
+          <tr><td>Fessenheim (2020)</td><td>폐쇄된 프랑스 원전 · centrale fermée</td></tr>
+        </table>
+      </section>
+
+      <!-- 2. 핵심 찌르기 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">2</span> 핵심 찌르기 · l'essentiel</div>
+        <div class="sect-sub">지문을 읽고 <b>30초 안에 핵심 한 문장</b>으로. 녹음 후 모범과 대조 — 겉돌지 말고 바로 핵심으로. <span class="goal">→ 핵심 못 찌르고 겉돌기</span></div>
+
+        <p style="font-size:12.5px;font-weight:700;color:var(--accent);margin:4px 0 6px"><span class="dir ab">한→불</span>지문 (한국어)</p>
+        <div class="drill">정부가 노후 원전 수명 연장과 신규 원전 건설을 동시에 추진하겠다고 밝히자, 환경단체는 사용후핵연료 처리 대책이 없는 상태에서의 확대라며 반발했다. 반면 산업계는 안정적이고 값싼 전력 없이는 반도체·AI 시대의 전력 수요를 감당할 수 없다고 맞섰다.</div>
+        <div class="task">▷ 30초, 핵심 한 문장 → 불어로 통역</div>
+        <details class="reveal"><summary>모범 핵심 보기</summary>
+          <div class="rv">
+            <span class="lab">핵심 (한국어)</span>원전 확대를 둘러싼 대립의 본질은 '폐기물·안전'이냐 '전력 안보'냐의 우선순위 문제다.
+            <span class="lab">Interprétation (français)</span><span class="fr">Au fond, le débat sur l'expansion du nucléaire oppose deux priorités : la gestion des déchets et la sûreté, d'un côté, la sécurité d'approvisionnement, de l'autre.</span>
+          </div>
+        </details>
+
+        <p style="font-size:12.5px;font-weight:700;color:var(--accent2);margin:18px 0 6px"><span class="dir ba">불→한</span>지문 (français)</p>
+        <div class="drill fr body-fr"><p style="margin:0">Longtemps présenté comme une énergie du passé, le nucléaire revient au premier plan sous l'effet de deux chocs : la guerre en Ukraine, qui a fait flamber le prix du gaz, et l'urgence climatique, qui impose une électricité décarbonée. Mais la facture des nouveaux réacteurs ne cesse d'enfler et les délais s'allongent.</p></div>
+        <div class="task">▷ 30초, 핵심 한 문장 → 한국어로 통역</div>
+        <details class="reveal"><summary>모범 핵심 보기</summary>
+          <div class="rv">
+            <span class="lab">L'essentiel (français)</span><span class="fr">Le nucléaire redevient central pour des raisons de prix et de climat, mais son coût et ses délais en fragilisent la relance.</span>
+            <span class="lab">핵심 (한국어)</span>원전은 가격과 기후 때문에 다시 부상했지만, 치솟는 비용과 지연이 그 재도약의 발목을 잡는다.
+          </div>
+        </details>
+      </section>
+
+      <!-- 3. 상황 맞춤 동사·연어 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">3</span> 상황 맞춤 동사 · 연어</div>
+        <div class="sect-sub">이 맥락에서 <b>쓰는 동사</b>와 <b>자주 틀리는 오용</b>을 나란히. 초록=권장, 빨강=피할 것. <span class="goal">→ 상황에 안 맞는 동사 사용</span></div>
+        <table class="grid verb">
+          <tr><th>한국어</th><th>✓ 권장 (français)</th><th>✗ 오용 주의</th></tr>
+          <tr><td>원전을 가동하다</td><td>exploiter / mettre en service une centrale</td><td>✗ ouvrir une centrale</td></tr>
+          <tr><td>원전을 폐쇄하다</td><td>fermer une centrale</td><td>✗ éteindre</td></tr>
+          <tr><td>원전을 해체하다</td><td>démanteler un réacteur / une centrale</td><td>✗ démonter, détruire</td></tr>
+          <tr><td>(원전) 수명을 연장하다</td><td>prolonger la durée d'exploitation</td><td>✗ allonger la vie</td></tr>
+          <tr><td>온실가스를 감축하다</td><td>réduire les émissions de gaz à effet de serre</td><td>✗ diminuer les gaz</td></tr>
+          <tr><td>탄소중립을 달성하다</td><td>atteindre la neutralité carbone</td><td>✗ arriver à / accomplir</td></tr>
+          <tr><td>재생에너지를 확대하다</td><td>développer / déployer les énergies renouvelables</td><td>✗ élargir les EnR</td></tr>
+          <tr><td>화석연료 의존을 줄이다</td><td>réduire la dépendance aux énergies fossiles</td><td>✗ baisser la dépendance</td></tr>
+          <tr><td>전력 수요를 감당하다</td><td>répondre à / couvrir la demande d'électricité</td><td>✗ supporter la demande</td></tr>
+          <tr><td>배출량을 상쇄하다</td><td>compenser les émissions</td><td>✗ annuler / effacer</td></tr>
+          <tr><td>전원(에너지) 믹스</td><td>le mix électrique / énergétique</td><td>✗ le mélange d'énergie</td></tr>
+          <tr><td>전력을 생산하다</td><td>produire de l'électricité</td><td>✗ fabriquer l'électricité</td></tr>
+        </table>
+      </section>
+
+      <!-- 4. 입에 붙이기 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">4</span> 입에 붙이기 · 자동화 청크</div>
+        <div class="sect-sub">고빈도 표현을 소리 내 3번씩 반복(섀도잉). 문장을 <b>클릭하면 낭독</b>돼요. <span class="goal">→ 자주 쓰는 표현 암기·자동화</span></div>
+        <table class="grid chunk body-fr">
+          <tr><td><p style="margin:0">à l'horizon 2050</p></td><td>2050년까지(를 목표로)</td></tr>
+          <tr><td><p style="margin:0">en vue d'atteindre la neutralité carbone</p></td><td>탄소중립 달성을 위해</td></tr>
+          <tr><td><p style="margin:0">la relance du nucléaire</p></td><td>원전 재도약(부흥)</td></tr>
+          <tr><td><p style="margin:0">une électricité décarbonée</p></td><td>저탄소·무탄소 전력</td></tr>
+          <tr><td><p style="margin:0">réduire notre dépendance aux énergies fossiles</p></td><td>화석연료 의존을 줄이다</td></tr>
+          <tr><td><p style="margin:0">la sécurité d'approvisionnement</p></td><td>공급 안보</td></tr>
+          <tr><td><p style="margin:0">la gestion des déchets radioactifs</p></td><td>방사성 폐기물 관리</td></tr>
+          <tr><td><p style="margin:0">selon le mix électrique actuel</p></td><td>현재 전원믹스에 따르면</td></tr>
+          <tr><td><p style="margin:0">peser lourd dans la facture</p></td><td>비용에서 큰 비중을 차지하다</td></tr>
+          <tr><td><p style="margin:0">accélérer la transition énergétique</p></td><td>에너지 전환을 가속하다</td></tr>
+        </table>
+      </section>
+
+      <!-- 5. 노트테이킹 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">5</span> 노트테이킹 코너</div>
+        <div class="sect-sub">아래 세그먼트를 들으며 노트 → 모범 노트와 대조. 대주제 먼저, 열거는 세로로, 숫자·연도는 그대로. <span class="goal">→ 노트 비효율로 연사 놓치기</span></div>
+        <div class="drill fr body-fr"><p style="margin:0">Trois arguments plaident pour la relance. Premièrement, le climat : le nucléaire émet très peu de CO2. Deuxièmement, le prix : une fois construits, les réacteurs produisent une électricité stable et bon marché. Troisièmement, l'indépendance : moins de gaz importé, donc moins de vulnérabilité. Mais attention : le premier EPR2 ne produira pas avant 2038, et la facture atteint déjà 72,8 milliards d'euros.</p></div>
+        <details class="reveal"><summary>모범 노트 보기</summary>
+          <div class="rv">
+<pre class="note">relance NUCL → 3 args
+  1. climat : CO2 ↓↓
+  2. prix : élec stable + bon marché
+          (une fois construit)
+  3. indép. : gaz import ↓ → vulnérab ↓
+  ⚠ MAIS
+    · 1er EPR2 → prod. 2038
+    · coût = 72,8 Md€ ↑</pre>
+            <span class="lab">이 세그먼트에서 꼭 잡을 것</span>
+            <ul class="checklist">
+              <li>대주제(relance)를 맨 위에 고정하고 시작</li>
+              <li>«Premièrement / Deuxièmement / Troisièmement» → 세로 번호 구조로</li>
+              <li>숫자·연도(2038, 72,8 Md€)는 약어 말고 그대로</li>
+              <li>대조 «Mais» → ⚠ 기호로 시각화</li>
+              <li>인과(donc)는 화살표(→)로 압축</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <!-- 6. 양방향 실전 세그먼트 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">6</span> 양방향 실전 세그먼트 (~1분)</div>
+        <div class="sect-sub">실제 순차 세그먼트 길이. 통역 후 모범과 대조. <span class="goal">→ 종합 적용</span></div>
+
+        <p style="font-size:12.5px;font-weight:700;color:var(--accent);margin:4px 0 6px"><span class="dir ab">한→불</span>세그먼트 (한국어)</p>
+        <div class="drill">오늘날 탄소중립은 더 이상 구호가 아니라 각국 산업 전략의 축이 되었습니다. 한국은 2050년 탄소중립과 2030년까지 2018년 대비 40% 감축을 선언했지만, 전력의 60% 이상을 여전히 석탄과 가스에 의존하고 있어 갈 길이 멉니다. 정부는 원전과 재생에너지를 동시에 늘리는 '무탄소 전원' 확대를 해법으로 제시하지만, 재생에너지 보급 속도와 사용후핵연료 처리라는 두 과제를 풀지 못하면 목표는 선언에 그칠 수 있습니다.</div>
+        <details class="reveal"><summary>모범 통역 (français) 보기</summary>
+          <div class="rv"><span class="fr">Aujourd'hui, la neutralité carbone n'est plus un slogan : elle est devenue l'axe des stratégies industrielles. La Corée s'est engagée sur la neutralité carbone en 2050 et sur une réduction de 40 % de ses émissions d'ici 2030 par rapport à 2018. Mais elle dépend encore du charbon et du gaz pour plus de 60 % de son électricité : le chemin est long. Le gouvernement propose d'élargir les sources décarbonées — nucléaire et renouvelables à la fois. Toutefois, sans résoudre deux problèmes — le rythme de déploiement des renouvelables et la gestion du combustible usé —, l'objectif risque de rester un vœu.</span></div>
+        </details>
+
+        <p style="font-size:12.5px;font-weight:700;color:var(--accent2);margin:18px 0 6px"><span class="dir ba">불→한</span>세그먼트 (français)</p>
+        <div class="drill fr body-fr"><p style="margin:0">En France, le nucléaire n'est pas un choix parmi d'autres : c'est la colonne vertébrale du système électrique. Avec près de 70 % de l'électricité d'origine nucléaire, le pays affiche l'une des empreintes carbone les plus faibles d'Europe pour son électricité. C'est pourquoi le gouvernement a lancé la construction de six EPR2. Mais cette relance soulève trois questions : le coût, qui atteint désormais 72,8 milliards d'euros ; les délais, puisque le premier réacteur n'entrera pas en service avant 2038 ; et les déchets, dont le stockage définitif n'est toujours pas réglé.</p></div>
+        <details class="reveal"><summary>모범 통역 (한국어) 보기</summary>
+          <div class="rv">프랑스에서 원자력은 여러 선택지 중 하나가 아니라 전력 시스템의 척추입니다. 전력의 약 70%를 원자력에서 얻는 덕분에, 프랑스는 전력 부문 탄소 배출이 유럽에서 가장 낮은 축에 듭니다. 그래서 정부는 EPR2 6기 건설에 착수했습니다. 그러나 이 재도약에는 세 가지 물음이 따릅니다. 728억 유로에 이르는 비용, 첫 원자로가 2038년에야 가동된다는 지연, 그리고 최종 처분이 여전히 미해결인 폐기물입니다.</div>
+        </details>
+
+        <div class="tags">
+          <span class="tag">원전·에너지</span><span class="tag">탄소중립</span><span class="tag">양방향</span><span class="tag">순차+동시</span>
+        </div>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>(첫 편) 원전·에너지 &amp; 탄소중립 — 2026-07-28</li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Interprétation du jour. All rights reserved.<br>주간 대주제 로테이션에 따라 매일 아침 자동 갱신됩니다. 모범 통역은 학습용 예시입니다.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 지문에서 <b>단어를 드래그</b>하면 바로 검색·낭독돼요.</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 요약 · 재구성 연습</h3>
+        <div class="sum-lab">① 한국어로 3줄 핵심 요약</div>
+        <textarea class="sum" id="sumKo" placeholder="오늘 주제의 핵심을 우리말 3문장으로…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">② 프랑스어로 다시 요약 (résumé)</div>
+        <textarea class="sum" id="sumFr" placeholder="Résumez le sujet en français en 3–4 phrases…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 이 문단을 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      papago:'https://papago.naver.com/?sk=fr&tk=ko&st='+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('isumKo_'+id)||''; fr.value=localStorage.getItem('isumFr_'+id)||''; }catch(e){} }
+  function count(){
+    cKo.textContent=ko.value.length+'자';
+    var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0;
+    cFr.textContent=m+' mots';
+  }
+  function save(){ try{ localStorage.setItem('isumKo_'+id,ko.value); localStorage.setItem('isumFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page KO<->FR dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 통역 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','통역 팁: 연어·오용 주의 한 줄.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2').replace(/\[\[([^\]]*)\]\]/g,'$1').replace(/'''?/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var fr=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(fr){ fr=fr.split(/\n==\s*\{\{langue\|/)[0]; } else { fr=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=fr.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 불↔한</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>
