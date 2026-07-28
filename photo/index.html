@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Photo English du jour",
+  "schemaVersion": 1,
+  "description": "사진작가로 다시 활동하려는 학습자를 위한 매일 영어 학습 페이지. 아트씬 시사 브리핑, 작품 표현 어휘·숙어, 필수 문장 패턴(낭독), 레지던시 지원 실전, 현장 회화·이메일, 오늘의 미션으로 구성. 영↔한 사전 검색·낭독·저장 기능 포함."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photo English du jour — 사진작가를 위한 매일 영어</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f4f2ee; --paper:#ffffff; --ink:#1a1815; --muted:#726c62;
+    --line:#e4ddd0; --accent:#2c2a26; --accent2:#b0752f; --accent-soft:#f0e7d7;
+    --tag:#efeae0; --tag-ink:#6a5636; --hl:#ffe7b8; --ok:#2f7d46; --bad:#b23a48;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent2)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:27px;line-height:1.25;margin:0 0 12px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:14px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent2);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px;}
+  .sect-h .n{font-family:var(--sans);font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sect-sub{font-size:12.5px;color:var(--muted);margin:8px 0 12px;}
+  .goal{font-size:12px;color:var(--accent2);font-weight:600;}
+  .body-en{font-family:var(--serif);font-size:17px;line-height:1.72;}
+  .body-en p{margin:0 0 13px;}
+  .ko{font-size:14.5px;color:#3a352d;background:#faf8f4;border-left:3px solid var(--line);padding:10px 13px;border-radius:0 8px 8px 0;margin:6px 0 0;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin:6px 0 14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-en p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  table.grid{width:100%;border-collapse:collapse;font-size:14px;}
+  table.grid td,table.grid th{padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  table.grid th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  table.cheat tr td:first-child{font-family:var(--serif);font-weight:700;color:var(--accent2);width:44%;}
+  table.voca tr td:first-child{font-family:var(--serif);color:var(--accent2);font-size:15px;width:50%;}
+  table.chunk tr td:first-child{font-family:var(--serif);color:var(--accent2);width:56%;}
+  table.res tr td:nth-child(1){font-weight:600;width:24%;}
+  table.res tr td:nth-child(2){font-family:var(--serif);color:var(--accent);width:34%;}
+  table.res tr td:nth-child(3){font-size:13px;color:var(--muted);}
+  table.talk tr td:nth-child(1){font-size:12px;color:var(--muted);width:22%;}
+  table.talk tr td:nth-child(2){font-family:var(--serif);color:var(--accent);width:46%;}
+  .task{font-size:12.5px;color:var(--accent2);font-weight:700;margin:12px 0 6px;}
+  .tmpl{background:#fbfaf7;border:1px dashed var(--accent2);border-radius:10px;padding:14px 16px;font-family:var(--serif);font-size:16px;line-height:1.9;}
+  .tmpl b{background:var(--hl);font-weight:600;padding:0 4px;border-radius:3px;}
+  .checklist{list-style:none;padding:0;margin:10px 0 0;font-size:13.5px;}
+  .checklist li{padding:4px 0 4px 24px;position:relative;}
+  .checklist li::before{content:'\2610';position:absolute;left:0;color:var(--accent2);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#000;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent2);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent2);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:96px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Photo English du jour<small>사진작가를 위한 매일 영어</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-28-comeback-ai-residency">
+        <div class="kicker">Comeback #01 · 다시 시작하기</div>
+        <h1 class="title">돌아오는 사진작가를 위한 영어 — 진정성 논쟁 &amp; 레지던시</h1>
+        <div class="meta">
+          <span><b>초점</b> 시사 · 작품 표현 · 레지던시 · 현장 회화</span>
+          <span><b>레벨</b> 중급~고급</span>
+          <span><b>언어</b> 영어(타깃) ↔ 한국어(설명)</span>
+        </div>
+        <div class="why">
+          <span class="lab">오늘의 목표 ·</span>
+          몇 년의 공백 뒤 다시 현장에 붙기 위한 <b>실전 영어</b>. 지금 아트씬에서 벌어지는 이슈(①)를 알고, 내 작업을 영어로 <b>말·글로 표현</b>(②③)하고, <b>레지던시 지원</b>(④)과 <b>오프닝·이메일</b>(⑤)에서 바로 쓰는 표현을 익힌 뒤, 오늘 배운 걸로 <b>내 작업 한 단락</b>을 써봅니다(⑥).
+        </div>
+      </article>
+
+      <!-- 1. Scene brief -->
+      <section class="card">
+        <div class="sect-h"><span class="n">1</span> Today's scene · 오늘의 시사점</div>
+        <div class="sect-sub">지금 아트·사진 현장에서 알아야 할 이슈 한 편. 문장을 <b>클릭하면 낭독</b>돼요. <span class="goal">→ 활동 시 숙지할 시사점</span></div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 Read all</button>
+          <button id="ttsStop" class="tts-btn ghost">■ Stop</button>
+          <span class="tts-lab">Speed
+            <select id="ttsRate"><option value="0.8">slow</option><option value="0.9" selected>a bit slow</option><option value="1">normal</option></select>
+          </span>
+          <span class="tts-lab">Voice <select id="ttsVoice"></select></span>
+        </div>
+        <div class="body-en">
+          <p>Photography is going through an identity check. As AI image generators flood the field, the major contests have <mark>drawn a hard line</mark>: the World Press Photo Contest now bans AI-generated images and generative fill, defining a photograph as something that "captures illumination on a sensor or film" — <mark>a record of a tangible moment</mark>. Only camera-based work qualifies, though AI noise reduction is tolerated <mark>in moderation</mark>. For a photographer <mark>coming back to the field</mark>, this matters: authenticity and provenance are now selling points, not technicalities.</p>
+          <p>At the same time, the residency circuit is <mark>wide open</mark>. Programs like the Photographic Resource Center in Boston (deadline 31 August) or Light Work in Syracuse (a one-month stay with a $7,500 stipend and an apartment) invite lens-based artists to apply with a portfolio, a project proposal, a CV, and an artist statement. Getting these documents right in English is often what separates a <mark>shortlisted</mark> application from a rejected one.</p>
+        </div>
+        <div class="ko">사진은 지금 '정체성 점검' 중이다. AI 이미지 생성기가 쏟아지자 주요 공모전은 선을 그었다 — 월드프레스포토는 AI 생성 이미지와 '생성형 채우기(generative fill)'를 금지하고, 사진을 "센서나 필름에 빛을 담아낸 것", 즉 '실재하는 순간의 기록'으로 정의했다. 카메라 기반 작업만 인정되며, AI 노이즈 제거만 제한적으로 허용된다. 복귀하는 작가에게 이건 중요하다 — 이제 '진정성·출처'가 기술적 곁가지가 아니라 강점이 된다. 한편 레지던시 문은 활짝 열려 있다. 보스턴 PRC(마감 8/31), 시러큐스 Light Work(1개월·지원금 $7,500·숙소 제공) 등은 포트폴리오·프로젝트 프로포절·CV·아티스트 스테이트먼트로 지원을 받는다. 이 서류들을 영어로 잘 쓰는 것이 서류 통과와 탈락을 가른다.</div>
+        <table class="grid cheat" style="margin-top:14px">
+          <tr><th>Key fact</th><th>메모</th></tr>
+          <tr><td>bans AI-generated images &amp; generative fill</td><td>AI 생성·생성형 채우기 금지 (WPP)</td></tr>
+          <tr><td>"captures illumination on a sensor or film"</td><td>사진의 정의 — 실재 순간의 기록</td></tr>
+          <tr><td>AI noise reduction — tolerated in moderation</td><td>노이즈 제거만 절제하에 허용</td></tr>
+          <tr><td>PRC Boston — deadline Aug 31</td><td>보스턴 레지던시 마감일</td></tr>
+          <tr><td>Light Work — 1 month · $7,500 stipend</td><td>시러큐스 레지던시 지원금·숙소</td></tr>
+          <tr><td>application = portfolio + proposal + CV + statement</td><td>지원 서류 4종</td></tr>
+        </table>
+      </section>
+
+      <!-- 2. Vocabulary to describe your work -->
+      <section class="card">
+        <div class="sect-h"><span class="n">2</span> Talking about your work · 작품 표현</div>
+        <div class="sect-sub">아티스트 스테이트먼트·작품 설명에 반복해서 쓰는 어휘·숙어. <span class="goal">→ 작품 표현 시 사용하는 단어·숙어</span></div>
+        <table class="grid voca">
+          <tr><td>a body of work</td><td>(일관된) 작업 세계, 작품군</td></tr>
+          <tr><td>an ongoing series</td><td>진행 중인 연작</td></tr>
+          <tr><td>lens-based media</td><td>렌즈 기반 매체(사진·영상)</td></tr>
+          <tr><td>to explore / interrogate themes of ~</td><td>~라는 주제를 탐구/질문하다</td></tr>
+          <tr><td>to draw on ~</td><td>~에서 (영감·소재를) 끌어오다</td></tr>
+          <tr><td>in dialogue with ~</td><td>~와 대화하듯 참조하며</td></tr>
+          <tr><td>a visual language / vocabulary</td><td>고유의 시각 언어</td></tr>
+          <tr><td>staged vs. candid</td><td>연출된 vs. 자연스러운(스냅)</td></tr>
+          <tr><td>the mundane / the everyday</td><td>일상적인 것, 평범한 것</td></tr>
+          <tr><td>to bear witness to ~</td><td>~을 증언하다, 기록으로 남기다</td></tr>
+          <tr><td>a long-form documentary project</td><td>장기 다큐멘터리 프로젝트</td></tr>
+          <tr><td>to blur the line between ~ and ~</td><td>~와 ~의 경계를 흐리다</td></tr>
+          <tr><td>large-format prints / printed at scale</td><td>대형 인화</td></tr>
+          <tr><td>the gaze</td><td>시선, 응시(작품의 시점)</td></tr>
+        </table>
+      </section>
+
+      <!-- 3. Sentence patterns -->
+      <section class="card">
+        <div class="sect-h"><span class="n">3</span> Sentence patterns · 필수 문장 패턴</div>
+        <div class="sect-sub">스테이트먼트·이메일에 그대로 쓰는 문장 틀. 소리 내 3번씩 반복(<b>클릭 낭독</b>), 빈칸은 내 정보로. <span class="goal">→ 필수 문장 자동화</span></div>
+        <table class="grid chunk body-en">
+          <tr><td><p style="margin:0">My work explores the relationship between ___ and ___.</p></td><td>내 작업은 ~와 ~의 관계를 탐구한다</td></tr>
+          <tr><td><p style="margin:0">This series was shot over ___ in ___.</p></td><td>이 연작은 ~동안 ~에서 촬영했다</td></tr>
+          <tr><td><p style="margin:0">I'm drawn to ___.</p></td><td>나는 ~에 (자연히) 끌린다</td></tr>
+          <tr><td><p style="margin:0">I work primarily in ___ (black-and-white / medium format).</p></td><td>나는 주로 ~로 작업한다</td></tr>
+          <tr><td><p style="margin:0">I'm reaching out to introduce my work.</p></td><td>제 작업을 소개드리고자 연락드립니다</td></tr>
+          <tr><td><p style="margin:0">I'd love to explore possible ways of working together.</p></td><td>협업 가능성을 함께 논의하고 싶습니다</td></tr>
+          <tr><td><p style="margin:0">Please find attached my portfolio and CV.</p></td><td>포트폴리오와 CV를 첨부합니다</td></tr>
+          <tr><td><p style="margin:0">I would be grateful for the opportunity to ___.</p></td><td>~할 기회를 주시면 감사하겠습니다</td></tr>
+          <tr><td><p style="margin:0">Thank you for considering my application.</p></td><td>지원을 검토해 주셔서 감사합니다</td></tr>
+          <tr><td><p style="margin:0">I look forward to hearing from you.</p></td><td>답신 기다리겠습니다</td></tr>
+        </table>
+      </section>
+
+      <!-- 4. Residency application -->
+      <section class="card">
+        <div class="sect-h"><span class="n">4</span> Residency application · 레지던시 지원 실전</div>
+        <div class="sect-sub">국내외 레지던시 지원 서류와 영어 용어. 낱장이 아니라 '편집된 한 벌'로 준비. <span class="goal">→ 레지던시 활동 시 숙지 사항</span></div>
+        <table class="grid res">
+          <tr><th>준비물</th><th>English</th><th>한 줄 팁</th></tr>
+          <tr><td>포트폴리오</td><td>portfolio (15–20 images)</td><td>낱장 말고 '편집된 시퀀스'로, 대표작 먼저</td></tr>
+          <tr><td>아티스트 스테이트먼트</td><td>artist statement</td><td>1인칭·현재형. 무엇을·왜·어떻게를 3문단</td></tr>
+          <tr><td>프로젝트 계획</td><td>project proposal</td><td>레지던시 기간에 뭘 만들지 구체적으로</td></tr>
+          <tr><td>이력</td><td>CV / résumé</td><td>전시·출판·수상을 최신순으로</td></tr>
+          <tr><td>약력</td><td>(short) bio</td><td>3인칭 3–4문장, 웹·캡션용</td></tr>
+          <tr><td>지원 편지</td><td>cover letter</td><td>왜 하필 '이' 레지던시인지</td></tr>
+          <tr><td>추천서</td><td>reference / recommendation letter</td><td>필요 시 미리 부탁해 두기</td></tr>
+        </table>
+        <div class="task">체크리스트</div>
+        <ul class="checklist">
+          <li>artist statement — 첫 문장에 결론(핵심 주제)부터</li>
+          <li>proposal — 결과물·일정·필요 시설을 명시</li>
+          <li>이미지 파일명·캡션(제목·연도·매체·크기) 영어로 통일</li>
+          <li>마감·형식(파일 용량, PDF 여부) 요강 그대로</li>
+          <li>예시: PRC Boston(마감 8/31), Light Work(1개월·$7,500)</li>
+        </ul>
+      </section>
+
+      <!-- 5. On the ground -->
+      <section class="card">
+        <div class="sect-h"><span class="n">5</span> On the ground · 현장 회화 &amp; 이메일</div>
+        <div class="sect-sub">오프닝·인터뷰·피칭·후속 이메일에서 바로 쓰는 표현. <span class="goal">→ 네트워킹·실전 커뮤니케이션</span></div>
+        <table class="grid talk body-en">
+          <tr><th>상황</th><th>English</th><th>한국어</th></tr>
+          <tr><td>오프닝 인사</td><td><p style="margin:0">Congratulations on the show — the work is striking.</p></td><td>전시 축하해요, 작업 인상적이에요</td></tr>
+          <tr><td>관심 표현</td><td><p style="margin:0">What drew you to this subject?</p></td><td>무엇이 이 주제로 이끌었나요?</td></tr>
+          <tr><td>자기소개</td><td><p style="margin:0">I'm a photographer working in ___.</p></td><td>저는 ~ 작업을 하는 사진작가예요</td></tr>
+          <tr><td>연결</td><td><p style="margin:0">Shall we stay in touch? Here's my card.</p></td><td>계속 연락해요, 명함이에요</td></tr>
+          <tr><td>피칭</td><td><p style="margin:0">I have a series that might be a good fit for your space.</p></td><td>공간에 잘 맞을 연작이 있어요</td></tr>
+          <tr><td>후속 이메일</td><td><p style="margin:0">It was great to meet you at ___. As promised, here's my portfolio.</p></td><td>~에서 반가웠어요, 약속대로 포트폴리오 보내요</td></tr>
+          <tr><td>인터뷰 답변</td><td><p style="margin:0">The project started when ___.</p></td><td>이 프로젝트는 ~때 시작됐어요</td></tr>
+          <tr><td>판매·에디션</td><td><p style="margin:0">The prints are available in an edition of ___.</p></td><td>~ 에디션으로 판매합니다</td></tr>
+        </table>
+      </section>
+
+      <!-- 6. Mission -->
+      <section class="card">
+        <div class="sect-h"><span class="n">6</span> Today's mission · 오늘의 미션</div>
+        <div class="sect-sub">배운 표현으로 <b>내 작업 한 단락</b>을 영어로. 아래 틀을 채운 뒤 오른쪽 '초안' 칸에 써보세요(자동 저장). <span class="goal">→ 표현을 내 것으로</span></div>
+        <div class="tmpl">
+          I'm a <b>[documentary]</b> photographer based in <b>[Seoul]</b>.<br>
+          My work explores <b>[themes of ___]</b>, drawing on <b>[___]</b>.<br>
+          I work primarily in <b>[___]</b>, and I'm drawn to <b>[the everyday / ___]</b>.<br>
+          After a few years away, I'm starting a new series about <b>[___]</b>, and I'm looking for <b>[a residency / a gallery / collaborators]</b> to develop it.
+        </div>
+        <div class="task">보너스</div>
+        <ul class="checklist">
+          <li>②의 숙어 1개, ③의 문장 틀 1개를 꼭 섞기</li>
+          <li>큰 소리로 30초 자기소개(엘리베이터 피치)로 말해보기</li>
+          <li>모르는 단어는 오른쪽 '사전 검색'에 드래그</li>
+        </ul>
+        <div class="tags">
+          <span class="tag">photography</span><span class="tag">residency</span><span class="tag">artist statement</span><span class="tag">art English</span>
+        </div>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>(첫 편) 진정성 논쟁 &amp; 레지던시 — 2026-07-28</li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Photo English du jour. All rights reserved.<br>사진작가로 다시 활동하려는 이를 위해 매일 아침 자동 갱신됩니다. 예문은 학습용입니다.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색 (영↔한)</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="영어·한국어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 영↔한 자동 판별. 지문에서 <b>단어를 드래그</b>하면 바로 검색·낭독돼요.</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">영한사전</span></a>
+          <a href="#" data-d="cambridge" target="_blank" rel="noopener">Cambridge<br><span style="font-size:10px;color:var(--muted)">영영·영한</span></a>
+          <a href="#" data-d="mw" target="_blank" rel="noopener">Merriam-W<br><span style="font-size:10px;color:var(--muted)">영영사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">영↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">영↔한</span></a>
+          <a href="#" data-d="papago" target="_blank" rel="noopener">Papago<br><span style="font-size:10px;color:var(--muted)">영↔한</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 오늘의 미션 초안</h3>
+        <div class="sum-lab">① 내 작업 소개 (영어 초안)</div>
+        <textarea class="sum" id="sumEn" placeholder="I'm a … photographer based in …"></textarea>
+        <div class="counter" id="cEn">0 words</div>
+        <div class="sum-lab">② 한국어 메모 (뜻·아이디어)</div>
+        <textarea class="sum" id="sumKo" placeholder="쓰고 싶은 내용·단어 메모…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== Text-to-speech (English) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var enVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    enVoices=all.filter(function(v){return /^en/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!enVoices.length){ var o=document.createElement('option'); o.textContent='(영어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    enVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    enVoices.forEach(function(v,i){ if(pref<0 && /(samantha|daniel|enhanced|premium|siri|google (us|uk)|aaron|karen|serena)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-en p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(enVoices[vi]) u.voice=enVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-en p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-en p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-en p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://en.dict.naver.com/#/search?query='+q,
+      cambridge:'https://dictionary.cambridge.org/dictionary/english/'+q,
+      mw:'https://www.merriam-webster.com/dictionary/'+q,
+      reverso:'https://context.reverso.net/translation/english-korean/'+q,
+      deepl:'https://www.deepl.com/translator#en/ko/'+q,
+      papago:'https://papago.naver.com/?sk=en&tk=ko&st='+q
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.cambridge+'" target="_blank" rel="noopener">Cambridge</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var en=document.getElementById('sumEn'), ko=document.getElementById('sumKo');
+  var cEn=document.getElementById('cEn'), cKo=document.getElementById('cKo');
+  function load(){ try{ en.value=localStorage.getItem('psumEn_'+id)||''; ko.value=localStorage.getItem('psumKo_'+id)||''; }catch(e){} }
+  function count(){
+    var m=en.value.trim()? en.value.trim().split(/\s+/).length:0;
+    cEn.textContent=m+' words';
+    cKo.textContent=ko.value.length+'자';
+  }
+  function save(){ try{ localStorage.setItem('psumEn_'+id,en.value); localStorage.setItem('psumKo_'+id,ko.value);}catch(e){} count(); }
+  en.addEventListener('input',save); ko.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page EN<->KO dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['You are an English<->Korean learner dictionary for a photographer. Explain: "'+w+'"',
+      'Answer in this format only, no markdown symbols.',
+      '표제어: (base form)','품사: ','뜻: (1~2 core meanings in Korean)',
+      '예문: (English) — (Korean)','팁: art/photography 맥락 뉘앙스 한 줄.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+  async function gGloss(w, kor){
+    var sl=kor?'ko':'en', tl=kor?'en':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2').replace(/\[\[([^\]]*)\]\]/g,'$1').replace(/'''?/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+  }
+  async function wiktEn(w){
+    var url='https://en.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w.toLowerCase());
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var seg=wt.split(/==\s*English\s*==/)[1]; if(!seg) throw new Error('nolang');
+    seg=seg.split(/\n==\s*[A-Z][^=]/)[0];
+    var posMap={Noun:'명사',Verb:'동사',Adjective:'형용사',Adverb:'부사',Preposition:'전치사',Pronoun:'대명사',Conjunction:'접속사',Interjection:'감탄사',Phrase:'표현',Idiom:'숙어',Numeral:'수사','Proper noun':'고유명사'};
+    var lines=seg.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^====?\s*([A-Za-z ]+?)\s*====?\s*$/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+([^*:].*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var kor=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,kor); }catch(e){}
+    if(!kor){ try{ wk=await wiktEn(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=kor?'한국어 → 영어':'영어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">English definition · Wiktionary</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent2)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent2)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 영한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 영↔한</a> · '+
+             '<a href="'+u.cambridge+'" target="_blank" rel="noopener">Cambridge</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>
