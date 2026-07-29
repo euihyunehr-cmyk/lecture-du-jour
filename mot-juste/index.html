@@ -1,0 +1,528 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Le mot juste",
+  "schemaVersion": 1,
+  "description": "매일 한 묶음, 통역 정밀도 훈련 페이지. ① 혼동 어휘 쌍(probabilité≠possibilité 식) ② 파생어 용법(engager/engagement 식 지배·뉘앙스) ③ 기관 약어↔정식명(한/불) ④ 불어적 표현·연어(낭독). 낭독·사전·요약 기능 포함."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le mot juste — 매일 한 묶음 통역 정밀도 훈련</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f2f4f6; --paper:#ffffff; --ink:#1c2530; --muted:#6b7683;
+    --line:#e2e7ec; --accent:#1f5f8b; --accent2:#b23a48; --accent-soft:#e7eef4;
+    --tag:#eaf0f2; --tag-ink:#28506b; --hl:#fff2b8; --ok:#1f7a54; --bad:#b23a48;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,'D2Coding',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:27px;line-height:1.25;margin:0 0 12px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:14px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px;}
+  .sect-h .n{font-family:var(--sans);font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sect-sub{font-size:12.5px;color:var(--muted);margin:8px 0 12px;}
+  .goal{font-size:12px;color:var(--accent2);font-weight:600;}
+  .body-fr{font-family:var(--serif);font-size:17px;line-height:1.7;}
+  .body-fr p{margin:0 0 13px;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin:6px 0 14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  table.grid{width:100%;border-collapse:collapse;font-size:14px;}
+  table.grid td,table.grid th{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  table.grid th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  /* 혼동 어휘 쌍 */
+  table.pairs tr td:nth-child(1){font-family:var(--serif);font-weight:700;width:24%;}
+  table.pairs tr td:nth-child(1) .a{color:var(--accent);} table.pairs tr td:nth-child(1) .b{color:var(--accent2);}
+  table.pairs tr td:nth-child(1) .vs{color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:600;padding:0 2px;}
+  table.pairs tr td:nth-child(2){width:34%;font-size:13.5px;}
+  table.pairs tr td:nth-child(2) .a{color:var(--accent);font-weight:600;} table.pairs tr td:nth-child(2) .b{color:var(--accent2);font-weight:600;}
+  table.pairs tr td:nth-child(3){font-family:var(--serif);font-size:13.5px;color:#38424e;}
+  /* 파생어 가족 */
+  table.fam tr td:nth-child(1){font-family:var(--serif);color:var(--accent);font-weight:700;width:34%;}
+  table.fam tr td:nth-child(2){width:26%;font-size:13.5px;}
+  table.fam tr td:nth-child(3){font-family:var(--serif);font-size:13.5px;color:#38424e;}
+  /* 기관 */
+  table.orgs tr td:nth-child(1){font-family:var(--mono);font-weight:700;color:var(--accent);white-space:nowrap;width:14%;}
+  table.orgs tr td:nth-child(2){font-family:var(--serif);width:52%;}
+  table.orgs tr td:nth-child(3){font-size:13.5px;color:#38424e;}
+  table.chunk tr td:first-child{font-family:var(--serif);color:var(--accent);width:54%;}
+  .note{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px;margin-top:12px;line-height:1.6;}
+  .note b{color:var(--accent);}
+  .task{font-size:12.5px;color:var(--accent2);font-weight:600;margin:9px 0 4px;}
+  details.reveal{margin-top:12px;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  details.reveal>summary{cursor:pointer;list-style:none;padding:9px 13px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);}
+  details.reveal>summary::-webkit-details-marker{display:none}
+  details.reveal>summary::before{content:'▸ ';}
+  details.reveal[open]>summary::before{content:'▾ ';}
+  details.reveal .rv{padding:12px 15px;font-size:14px;line-height:1.6;}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .routine{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .routine span{background:var(--tag);color:var(--tag-ink);border-radius:8px;padding:6px 11px;font-size:12.5px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#18475f;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:88px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Le mot juste<small>매일 한 묶음 · 통역 정밀도 훈련</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-29-mot-juste-01">
+        <div class="kicker">n° 1 · 매일 새 묶음</div>
+        <h1 class="title">헷갈리면 지는 말들 — Trouver le mot juste</h1>
+        <div class="meta">
+          <span><b>오늘의 4묶음</b> 혼동 어휘 쌍 · 파생어 용법 · 기관 약어↔정식명 · 불어적 표현</span>
+          <span><b>방향</b> 한↔불</span>
+        </div>
+        <div class="why">
+          <span class="lab">왜 이 페이지? ·</span>
+          통역은 "비슷한 말"이 아니라 <b>딱 맞는 말</b>로 결정됩니다. probabilité와 possibilité를 섞고, engagement을 늘 '약속'으로만 옮기고, 기관 약어에서 멈칫하면 핵심이 흐려져요. 매일 한 묶음씩 <b>정밀도</b>를 올립니다.
+        </div>
+        <div class="task">오늘 루틴 (15–20분)</div>
+        <div class="routine">
+          <span>① 혼동 쌍 소리 내 구분 + 예문 1개씩</span>
+          <span>② engager 가족, 지배(전치사)까지 통째로</span>
+          <span>③ 기관 약어 가리고 정식명 말하기 (한·불)</span>
+          <span>④ 불어적 표현 10개 낭독 3회</span>
+        </div>
+      </article>
+
+      <!-- 1. 혼동 어휘 쌍 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">1</span> 혼동 어휘 쌍 · à ne pas confondre</div>
+        <div class="sect-sub">뜻이 비슷해 보여 통역에서 잘 섞이는 짝. <span style="color:var(--accent);font-weight:700">파랑</span> vs <span style="color:var(--accent2);font-weight:700">빨강</span>으로 구분해서 외운다. <span class="goal">→ 상황에 안 맞는 단어</span></div>
+        <table class="grid pairs">
+          <tr><th>쌍</th><th>뜻 구분</th><th>예문 / 팁</th></tr>
+          <tr>
+            <td><span class="a">probabilité</span> <span class="vs">vs</span> <span class="b">possibilité</span></td>
+            <td><span class="a">확률</span>(발생 가능성·통계) / <span class="b">가능성·여지</span>(선택지)</td>
+            <td>une forte <b>probabilité</b> que… (~할 확률이 높다) · avoir la <b>possibilité</b> de… (~할 수 있다)</td>
+          </tr>
+          <tr>
+            <td><span class="a">an</span> <span class="vs">vs</span> <span class="b">année</span></td>
+            <td><span class="a">해</span>(시점·횟수, 셈) / <span class="b">한 해</span>(지속·내용)</td>
+            <td>il a 30 <b>ans</b> · une <b>année</b> difficile / tout au long de l'<b>année</b></td>
+          </tr>
+          <tr>
+            <td><span class="a">amener</span> <span class="vs">vs</span> <span class="b">apporter</span></td>
+            <td><span class="a">(사람·동물) 데려오다</span> / <span class="b">(사물) 가져오다</span></td>
+            <td>mener↔porter. <b>amener</b> un ami · <b>apporter</b> un document (반대: emmener / emporter)</td>
+          </tr>
+          <tr>
+            <td><span class="a">gouvernement</span> <span class="vs">vs</span> <span class="b">gouvernance</span></td>
+            <td><span class="a">정부·내각</span>(주체) / <span class="b">거버넌스</span>(운영 체계)</td>
+            <td>le <b>gouvernement</b> a démissionné · la <b>gouvernance</b> mondiale / d'entreprise</td>
+          </tr>
+          <tr>
+            <td><span class="a">éventuellement</span> <span class="vs">vs</span> <span class="b">finalement</span></td>
+            <td><span class="a">경우에 따라·혹시</span>(가능성) / <span class="b">결국</span></td>
+            <td>faux-ami! éventuellement ≠ eventually. <b>éventuellement</b> reporter · <b>finalement</b> annulé</td>
+          </tr>
+          <tr>
+            <td><span class="a">compréhensif</span> <span class="vs">vs</span> <span class="b">compréhensible</span></td>
+            <td><span class="a">이해심 많은</span>(너그러운) / <span class="b">이해 가능한</span></td>
+            <td>un chef <b>compréhensif</b> · une réaction <b>compréhensible</b></td>
+          </tr>
+          <tr>
+            <td><span class="a">davantage</span> <span class="vs">vs</span> <span class="b">d'avantage(s)</span></td>
+            <td><span class="a">더 (많이)</span>(부사) / <span class="b">이점의</span>(de+avantage)</td>
+            <td>travailler <b>davantage</b> · tirer <b>d'avantages</b> de la réforme</td>
+          </tr>
+          <tr>
+            <td><span class="a">dénoncer</span> <span class="vs">vs</span> <span class="b">annoncer</span></td>
+            <td><span class="a">고발·규탄하다, (조약을) 파기하다</span> / <span class="b">발표하다</span></td>
+            <td><b>dénoncer</b> un accord (파기/규탄) · <b>annoncer</b> une mesure (발표)</td>
+          </tr>
+        </table>
+      </section>
+
+      <!-- 2. 파생어 용법 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">2</span> 파생어 용법 · la famille du jour</div>
+        <div class="sect-sub">오늘의 가족: <b>engager</b>. 파생형마다 <b>지배(전치사)</b>와 뜻이 갈린다 — 통째로 외운다. <span class="goal">→ engager/engagement 차이</span></div>
+        <table class="grid fam">
+          <tr><th>형태 · 지배</th><th>뜻</th><th>예문</th></tr>
+          <tr><td>engager qn</td><td>고용·채용하다</td><td>engager un consultant / un avocat</td></tr>
+          <tr><td>engager qch</td><td>착수하다, (자금을) 투입하다</td><td>engager des réformes · engager des fonds</td></tr>
+          <tr><td>engager sa responsabilité</td><td>책임을 지다·걸다</td><td>le gouvernement engage sa responsabilité</td></tr>
+          <tr><td>s'engager <b>à</b> + inf.</td><td>~하기로 약속·다짐하다</td><td>l'État s'engage à réduire ses émissions</td></tr>
+          <tr><td>s'engager <b>dans</b></td><td>~에 뛰어들다·개입하다</td><td>s'engager dans un conflit / une voie</td></tr>
+          <tr><td>s'engager <b>auprès de / au côté de</b></td><td>~와 연대하다·편에 서다</td><td>s'engager au côté de l'Ukraine</td></tr>
+          <tr><td>un engagement</td><td>약속·공약 / 참여 / 개입 / (계약) 의무</td><td>prendre un engagement · l'engagement citoyen · les engagements financiers</td></tr>
+          <tr><td>engagé(e) (adj.)</td><td>참여적인 / 투입된·진행 중인</td><td>un artiste engagé · la transition engagée</td></tr>
+          <tr><td>dégager / se dégager (de)</td><td>도출하다 / (책임을) 벗다</td><td>dégager un consensus · se dégager de ses obligations</td></tr>
+        </table>
+        <div class="note"><b>통역 팁 ·</b> <b>engagement</b>을 무조건 '약속'으로 굳히지 말 것. 문맥이 <b>공약</b>(prendre un engagement), <b>참여</b>(engagement associatif), <b>개입</b>(engagement militaire), <b>재정 의무</b>(engagements financiers)로 갈린다. 동사 s'engager는 <b>à + 동사</b>(약속)와 <b>dans + 명사</b>(개입)를 반드시 구분.</div>
+      </section>
+
+      <!-- 3. 기관 약어 ↔ 정식명 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">3</span> 기관 약어 ↔ 정식명 · sigles</div>
+        <div class="sect-sub">약어를 보면 정식 프랑스어명과 한국어명이 <b>즉시</b> 나와야 한다. 왼쪽 약어를 가리고 말해 보기. <span class="goal">→ 조직·기관 이름</span></div>
+        <table class="grid orgs">
+          <tr><th>약어</th><th>정식명 (français)</th><th>한국어</th></tr>
+          <tr><td>ONU</td><td>Organisation des Nations unies</td><td>국제연합(유엔)</td></tr>
+          <tr><td>FMI</td><td>Fonds monétaire international</td><td>국제통화기금</td></tr>
+          <tr><td>BM</td><td>Banque mondiale</td><td>세계은행</td></tr>
+          <tr><td>OMC</td><td>Organisation mondiale du commerce</td><td>세계무역기구</td></tr>
+          <tr><td>OCDE</td><td>Organisation de coopération et de développement économiques</td><td>경제협력개발기구</td></tr>
+          <tr><td>OMS</td><td>Organisation mondiale de la santé</td><td>세계보건기구</td></tr>
+          <tr><td>OIT</td><td>Organisation internationale du travail</td><td>국제노동기구</td></tr>
+          <tr><td>FAO</td><td>Organisation des Nations unies pour l'alimentation et l'agriculture</td><td>유엔식량농업기구</td></tr>
+          <tr><td>OTAN</td><td>Organisation du traité de l'Atlantique Nord</td><td>북대서양조약기구(나토)</td></tr>
+          <tr><td>UE</td><td>Union européenne</td><td>유럽연합</td></tr>
+          <tr><td>CPI</td><td>Cour pénale internationale</td><td>국제형사재판소</td></tr>
+          <tr><td>CIJ</td><td>Cour internationale de justice</td><td>국제사법재판소</td></tr>
+          <tr><td>AIEA</td><td>Agence internationale de l'énergie atomique</td><td>국제원자력기구</td></tr>
+          <tr><td>HCR</td><td>Haut-Commissariat des Nations unies pour les réfugiés</td><td>유엔난민기구</td></tr>
+          <tr><td>UNICEF</td><td>Fonds des Nations unies pour l'enfance</td><td>유엔아동기금</td></tr>
+        </table>
+        <div class="task">▷ 셀프 테스트: 약어 열을 손으로 가리고, 한국어명만 보며 정식 프랑스어명 말하기</div>
+        <details class="reveal"><summary>발음 함정 체크</summary>
+          <div class="rv">l'<b>ONU</b> [o-ny], l'<b>OMS</b>, l'<b>OTAN</b> [o-tɑ̃] — 모두 관사 le/l'와 함께. <b>OCDE</b>는 끝에 <b>économiques</b>(복수)까지. <b>AIEA</b>는 「a-i-ə-a」 알파벳으로 또박또박. 한국어로는 나토=OTAN(불) / NATO(영) 혼동 주의.</div>
+        </details>
+      </section>
+
+      <!-- 4. 불어적 표현·연어 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">4</span> 불어적 표현 · 연어</div>
+        <div class="sect-sub">짧지만 "이걸 뭐라 하지?" 싶은 상당히 불어적인 표현. 소리 내 3번씩 — 문장을 <b>클릭하면 낭독</b>돼요. <span class="goal">→ 표현 자동화</span></div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 전체 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.8">느리게</option><option value="0.9" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <table class="grid chunk body-fr">
+          <tr><td><p style="margin:0">faire le point sur</p></td><td>~을 점검·정리하다</td></tr>
+          <tr><td><p style="margin:0">mettre l'accent sur</p></td><td>~을 강조하다</td></tr>
+          <tr><td><p style="margin:0">tirer la sonnette d'alarme</p></td><td>경종을 울리다</td></tr>
+          <tr><td><p style="margin:0">prendre acte de</p></td><td>~을 (공식적으로) 인지·유념하다</td></tr>
+          <tr><td><p style="margin:0">être à la hauteur de</p></td><td>~에 부응하다·걸맞다</td></tr>
+          <tr><td><p style="margin:0">faire l'objet de</p></td><td>~의 대상이 되다</td></tr>
+          <tr><td><p style="margin:0">s'inscrire dans la durée</p></td><td>장기적으로 이어지다·지속되다</td></tr>
+          <tr><td><p style="margin:0">le cas échéant</p></td><td>필요한 경우에는</td></tr>
+          <tr><td><p style="margin:0">force est de constater que…</p></td><td>~임을 인정할 수밖에 없다</td></tr>
+          <tr><td><p style="margin:0">peu ou prou</p></td><td>대략, 거의</td></tr>
+        </table>
+        <div class="tags">
+          <span class="tag">혼동 어휘</span><span class="tag">파생어</span><span class="tag">기관명</span><span class="tag">불어적 표현</span>
+        </div>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>(첫 편) 혼동 쌍·engager 가족·국제기구 약어 — 2026-07-29</li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Le mot juste. All rights reserved.<br>매일 아침 새 묶음으로 자동 갱신됩니다. 예문은 학습용입니다.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 표에서 <b>단어를 드래그</b>하면 바로 검색·낭독돼요.</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 오늘의 정리</h3>
+        <div class="sum-lab">가장 헷갈렸던 쌍/표현 3개 적기</div>
+        <textarea class="sum" id="sumKo" placeholder="예) probabilité vs possibilité, s'engager à/dans, OCDE 정식명…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">프랑스어로 예문 하나 만들어 보기</div>
+        <textarea class="sum" id="sumFr" placeholder="Faites une phrase avec le mot du jour…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('. '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      papago:'https://papago.naver.com/?sk=fr&tk=ko&st='+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('mjKo_'+id)||''; fr.value=localStorage.getItem('mjFr_'+id)||''; }catch(e){} }
+  function count(){
+    cKo.textContent=ko.value.length+'자';
+    var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0;
+    cFr.textContent=m+' mots';
+  }
+  function save(){ try{ localStorage.setItem('mjKo_'+id,ko.value); localStorage.setItem('mjFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page KO<->FR dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 통역 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','통역 팁: 연어·오용 주의 한 줄.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2').replace(/\[\[([^\]]*)\]\]/g,'$1').replace(/'''?/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var fr=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(fr){ fr=fr.split(/\n==\s*\{\{langue\|/)[0]; } else { fr=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=fr.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 불↔한</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>
