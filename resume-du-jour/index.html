@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résumé du jour — 순차통역 요약 연습</title>
+<style>
+  :root{
+    --bg:#f4f5f7; --card:#ffffff; --ink:#1c2430; --sub:#5b6472;
+    --accent:#1f4e79; --accent2:#2b6cb0; --red:#c0392b; --line:#e3e6ea;
+    --warm:#fff8e6; --warm-b:#e0a800; --ko:#1f4e79; --fr:#b23a2e;
+    --ok:#2f855a; --shadow:0 2px 10px rgba(20,30,50,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:22px 18px 80px}
+  a{color:var(--accent2)}
+
+  /* header */
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    padding:6px 2px 16px;border-bottom:1px solid var(--line);margin-bottom:20px}
+  .brand{font-weight:800;font-size:20px;letter-spacing:.02em;color:var(--accent)}
+  .brand span{font-weight:500;color:var(--sub);font-size:13px;margin-left:8px}
+  .badge{background:var(--accent);color:#fff;border-radius:999px;padding:4px 12px;font-size:12.5px;font-weight:700;white-space:nowrap}
+
+  h1.title{font-size:26px;line-height:1.32;margin:6px 0 12px;color:var(--ink)}
+  h1.title .fr{color:var(--fr)}
+  .meta{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    padding:12px 14px;font-size:14px;color:var(--sub);margin-bottom:14px}
+  .meta b{color:var(--ink)}
+  .why{background:#eef4fb;border:1px solid #d6e4f5;border-left:4px solid var(--accent2);
+    border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:14px}
+  .routine{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    padding:14px 16px;margin-bottom:26px}
+  .routine h3{margin:0 0 8px;font-size:14px;color:var(--accent)}
+  .routine ol{margin:0;padding-left:20px;font-size:14px;color:var(--ink)}
+  .routine li{margin:3px 0}
+
+  /* sections */
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:18px 18px 20px;margin-bottom:22px}
+  .sec-head{display:flex;align-items:center;gap:10px;margin:0 0 10px}
+  .num{flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;
+    display:grid;place-items:center;font-weight:800;font-size:15px}
+  .sec-head h2{font-size:18px;margin:0}
+  .flag{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;margin-left:auto}
+  .flag.ko{background:#e7effa;color:var(--ko)}
+  .flag.fr{background:#fbe9e7;color:var(--fr)}
+
+  .artline{font-size:13px;color:var(--sub);margin:2px 0 10px}
+  .artline a{word-break:break-all}
+  .lbl{font-weight:800;font-size:13.5px;color:var(--accent);margin:16px 0 6px;letter-spacing:.02em}
+  .reason{font-size:14px;color:var(--ink);margin:0 0 4px}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:2px 0 6px;overflow:hidden;border-radius:8px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:#f0f3f7;color:var(--accent);font-weight:700}
+  .kw td:first-child{font-weight:700}
+  .ko-w{color:var(--ko);font-weight:700}
+  .fr-w{color:var(--fr);font-weight:700}
+  td .term{font-weight:800;color:var(--ink)}
+
+  details.body{margin:6px 0 4px;border:1px dashed var(--line);border-radius:10px;background:#fbfcfd}
+  details.body>summary{cursor:pointer;padding:10px 12px;font-weight:700;font-size:13.5px;color:var(--accent);list-style:none}
+  details.body>summary::-webkit-details-marker{display:none}
+  details.body>summary::before{content:"▸ ";color:var(--accent2)}
+  details.body[open]>summary::before{content:"▾ "}
+  .body-inner{padding:2px 14px 12px}
+  .body-inner p{font-size:13.5px;margin:8px 0}
+  .fr-read{cursor:pointer;border-bottom:1px dotted #d7b3ad;transition:background .15s}
+  .fr-read:hover{background:#fbeee9}
+  .src{font-size:11.5px;color:var(--sub);font-style:italic;margin-top:6px}
+
+  /* TTS bar */
+  .ttsbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#fbeee9;border:1px solid #f0d6cf;
+    border-radius:10px;padding:8px 10px;margin:8px 0;font-size:12.5px}
+  .ttsbar button{border:0;border-radius:8px;padding:6px 12px;font-weight:700;font-size:12.5px;cursor:pointer}
+  .ttsbar .play{background:var(--fr);color:#fff}
+  .ttsbar .stop{background:#efe1de;color:var(--fr)}
+  .ttsbar select{border:1px solid #e0c8c2;border-radius:8px;padding:5px 6px;font-size:12.5px;background:#fff}
+  .ttsbar .hint{color:var(--sub)}
+
+  /* my summary */
+  .mybox label{display:block;font-size:12.5px;color:var(--sub);margin:8px 0 4px}
+  textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:14px;
+    font-family:inherit;resize:vertical;background:#fcfdfe}
+  textarea.mine{min-height:120px}
+  .count{font-size:11.5px;color:var(--sub);text-align:right;margin-top:2px}
+
+  /* proposed summary */
+  .warnbox{background:var(--warm);border:1px solid var(--warm-b);border-radius:10px;padding:11px 14px;
+    font-weight:700;color:#7f6000;font-size:14px;margin-bottom:12px}
+  .reveal{position:relative}
+  .reveal .cover{position:absolute;inset:0;background:rgba(244,245,247,.72);backdrop-filter:blur(6px);
+    border-radius:10px;display:grid;place-items:center;cursor:pointer;text-align:center;z-index:2}
+  .reveal .cover button{border:0;background:var(--accent);color:#fff;border-radius:999px;padding:10px 20px;
+    font-weight:800;font-size:14px;cursor:pointer;box-shadow:var(--shadow)}
+  .reveal .cover small{display:block;color:var(--sub);margin-top:8px;font-size:12px}
+  .reveal.open .cover{display:none}
+  .sumcard{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0}
+  .sumcard.ko{border-left:4px solid var(--ko)}
+  .sumcard.fr{border-left:4px solid var(--fr)}
+  .sumcard h4{margin:0 0 6px;font-size:14.5px}
+  .sumcard p{font-size:14px;margin:6px 0}
+  .logic{font-weight:800;color:var(--accent);font-size:13.5px;background:#eef4fb;border-radius:8px;
+    padding:7px 10px;margin-top:6px}
+  .check{list-style:none;padding:0;margin:8px 0 0}
+  .check li{position:relative;padding-left:22px;font-size:13.5px;margin:6px 0}
+  .check li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:800}
+
+  /* archive + tools */
+  .arch{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:16px 18px;margin-bottom:22px}
+  .arch h3,.tools h3{font-size:15px;color:var(--accent);margin:0 0 10px}
+  .arch ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--sub)}
+  .arch li{margin:5px 0}
+  .arch li b{color:var(--ink)}
+  .tools{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:16px 18px;margin-bottom:22px}
+  .dict{display:flex;gap:8px;flex-wrap:wrap}
+  .dict a{font-size:12.5px;text-decoration:none;background:#f0f3f7;color:var(--accent);
+    border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:600}
+  .dict a:hover{background:#e7effa}
+  .searchrow{display:flex;gap:8px;margin:4px 0 8px}
+  .searchrow input{flex:1;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:14px}
+  .searchrow button{border:0;background:var(--accent);color:#fff;border-radius:10px;padding:0 16px;font-weight:700;cursor:pointer}
+
+  footer{text-align:center;color:var(--sub);font-size:12px;margin-top:30px;line-height:1.7}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1c2430;color:#fff;
+    padding:9px 16px;border-radius:999px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:50}
+  .toast.show{opacity:1}
+  @media(max-width:560px){
+    h1.title{font-size:21px}
+    table{font-size:12.5px}
+    th,td{padding:6px 7px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">Résumé du jour<span>순차통역 요약 연습 · 논리 압축</span></div>
+    <div class="badge">원자력·에너지 ⑥ · 2026-07-30</div>
+  </header>
+
+  <h1 class="title">핵융합, 인공태양은 언제 뜰까 — <span class="fr">La fusion : révolution ou utopie&nbsp;?</span></h1>
+
+  <div class="meta">
+    <b>오늘의 2기사</b> 한국어 칼럼(경기중앙신문) · 프랑스어 분석(Code Climat) &nbsp;·&nbsp;
+    <b>방향</b> 한국어→요약 / 불어→한국어 요약(B언어 전환 금지) &nbsp;·&nbsp;
+    <b>세부 주제</b> ITER · 토카막 · 플라즈마 · 초전도 자석 · 삼중수소 · 상용화 과제
+  </div>
+
+  <div class="why">
+    <b>왜 이 페이지?</b> · 순차통역은 “다 말하기”가 아니라 <b>핵심만 짧게</b> 말하는 훈련입니다.
+    사설·칼럼처럼 논리가 정제된 글을 골라, 기사의 <b>논리 구조</b>(대안→난제→대조→전망, 약속↔한계→딜레마)를
+    한두 문장으로 압축하는 연습을 합니다.
+  </div>
+
+  <div class="routine">
+    <h3>오늘 루틴 (15–20분)</h3>
+    <ol>
+      <li>제시어·전문용어를 먼저 훑어 <b>대응어</b> 확인 (숫자·고유명사 포함)</li>
+      <li>기사 본문을 읽고 보지 않은 채 <b>스스로 요약</b>을 말/글로 완성</li>
+      <li>③번 <b>제안 요약본</b>을 열어 논리 구조·누락 대조</li>
+      <li>셀프 체크포인트로 <b>대조·딜레마</b>를 한 문장에 담았는지 점검</li>
+    </ol>
+  </div>
+
+  <!-- ===== 1. 한국어 기사 ===== -->
+  <section>
+    <div class="sec-head"><div class="num">1</div><h2>한국어 기사</h2><span class="flag ko">한 → 요약</span></div>
+    <div style="font-weight:700;font-size:16px">우리의 인공태양은 언제쯤 뜨는 것일까</div>
+    <div class="artline">경기중앙신문 · 오피니언 | 김윤석(연세대 전기전자공학부 겸임교수) | 2026.03.05 ·
+      <a href="https://www.ggjapp.com/news/articleView.html?idxno=224761" target="_blank" rel="noopener">원문 링크</a></div>
+
+    <div class="lbl">선정 이유</div>
+    <p class="reason">핵융합의 원리(플라즈마·자기장 밀폐)를 짚은 뒤 <b>스텔러레이터↔토카막</b>을 장단점으로 대조하고,
+      KSTAR의 성과와 남은 과제, 상용화 시점 전망으로 이어지는 ‘정의→난제→대조→전망’ 구조의 전문가 칼럼이다.
+      대조·전망 논리가 뚜렷해 요약 훈련에 적합하다.</p>
+
+    <div class="lbl">제시어 (한 → 불)</div>
+    <table class="kw"><thead><tr><th>한국어</th><th>Français</th></tr></thead><tbody>
+      <tr><td class="ko-w">핵융합</td><td class="fr-w">la fusion nucléaire</td></tr>
+      <tr><td class="ko-w">인공태양</td><td class="fr-w">le soleil artificiel</td></tr>
+      <tr><td class="ko-w">플라즈마</td><td class="fr-w">le plasma</td></tr>
+      <tr><td class="ko-w">토카막 / 스텔러레이터</td><td class="fr-w">le tokamak / le stellarator</td></tr>
+      <tr><td class="ko-w">초전도 자석</td><td class="fr-w">l’aimant supraconducteur</td></tr>
+      <tr><td class="ko-w">중수소·삼중수소</td><td class="fr-w">le deutérium et le tritium</td></tr>
+      <tr><td class="ko-w">자기장으로 가두다</td><td class="fr-w">confiner par un champ magnétique</td></tr>
+      <tr><td class="ko-w">상용화</td><td class="fr-w">la commercialisation / l’industrialisation</td></tr>
+    </tbody></table>
+
+    <div class="lbl">전문용어 설명</div>
+    <table><tbody>
+      <tr><td><span class="term">ITER</span></td><td>국제핵융합실험로. 태양의 핵융합을 지상에서 재현하는 실험로로, 한·미·중·일·러·EU·인도 등이 프랑스 카다라슈에 공동 건설 중.</td></tr>
+      <tr><td><span class="term">KSTAR</span></td><td>한국의 초전도 토카막 핵융합 연구장치. 1억도 초고온 플라즈마를 장시간 유지하는 세계적 기록을 보유.</td></tr>
+      <tr><td><span class="term">토카막</span></td><td>도넛(토로이달) 모양 장치로 자기장을 걸어 플라즈마를 가두는 방식. 구조가 단순하고 상용화에 가장 근접.</td></tr>
+      <tr><td><span class="term">스텔러레이터</span></td><td>복잡하게 꼬인 코일로 나선형 자기장을 만들어 플라즈마를 안정적으로 유지. 제작이 어렵고 비용이 큼.</td></tr>
+      <tr><td><span class="term">블랭킷</span></td><td>토카막 내벽에서 중성자의 운동에너지를 열로 흡수하고 동시에 삼중수소를 증식시키는 핵심 부품.</td></tr>
+    </tbody></table>
+
+    <details class="body"><summary>본문 펼치기</summary><div class="body-inner">
+      <p>우리 사회는 요즘 인공지능(AI)의 출현과 함께 ‘인공(Artificial)’이란 단어가 아주 익숙해졌다. 요즘 회자되는 인공태양(Artificial Sun)도 예외는 아니다.</p>
+      <p>인공태양은 태양의 에너지 생성 원리인 핵융합 반응을 지구상에서 인공적으로 구현하여 무한하고 청정한 에너지를 얻으려는 연구시설·기술로, 미래 에너지 문제를 해결할 꿈의 에너지원으로 기대를 모은다.</p>
+      <p>핵융합은 가벼운 원자핵들이 융합해 무거운 원자핵으로 바뀌는 것으로, 그 과정에서 줄어든 질량이 에너지로 변환된다. 연료인 중수소는 바닷물에서 쉽게 얻고, 삼중수소는 풍부한 리튬에서 핵융합로를 통해 생성한다.</p>
+      <p>핵융합 에너지는 기후 위기 극복과 AI發 전력 소비 급증을 감당할 강력하고도 현실적인 대안으로 부상하고 있다. 그러나 지구에서 태양의 환경을 구현해 핵융합을 일으키기는 매우 어렵다.</p>
+      <p>태양에서는 고온·고압으로 수소가 플라즈마(전자·이온이 분리된 이온화 기체) 상태여서 핵융합이 자연히 일어나지만, 지구에서는 강한 에너지를 가해 원자핵을 부딪혀 융합시키는 인위적 장치가 필요하다.</p>
+      <p>기본 원리는 플라즈마를 잘 가두고, 강한 에너지를 가해 융합을 일으키며, 반응을 오래 유지하는 것이다. 대표적으로 강한 자기장으로 가두는 방식이 있고, 장치 특성에 따라 스텔러레이터와 토카막으로 나뉜다.</p>
+      <p>스텔러레이터는 꼬인 코일로 나선형 자기장을 만들어 안정적으로 유지하지만 코일 제작이 어렵고 비용이 크다. 토카막은 도넛형으로 구조가 단순·저렴하고 제작이 빠르지만 플라즈마 전류를 장시간 정밀 제어해야 하는 높은 기술이 요구된다.</p>
+      <p>그럼에도 토카막은 상용화에 가장 근접해 ITER를 비롯한 주요 연구에 널리 쓰이며, 한국 KSTAR도 토카막 방식이다. 발전은 진공용기에 연료를 주입·가열(약 1억℃)해 핵융합을 일으키고, 중성자의 운동에너지를 블랭킷으로 열에 바꿔 터빈을 돌려 전기를 만든다.</p>
+      <p>KFE가 개발한 KSTAR는 세계 최초로 초전도 자석으로 1억℃ 플라즈마를 30초간 유지하는 등 세계 최고 수준이다. 다만 이제는 블랭킷·내열재료·가열 기술 등 자체 기술 개발을 서둘러야 한다.</p>
+      <p>정부는 2025년 11월 1조 2천억 원 규모 인공태양 연구시설을 전남 나주로 선정, 2027년 착공·2036년 완공을 목표로 한다. ITER는 카다라슈에 건설 중이나 건설만 10년 이상 걸린다. 미래학자들은 상용화가 2030년대에 시작돼 2030~2040년대에는 ‘뜰’ 것으로 본다.</p>
+      <div class="src">출처: 경기중앙신문(2026.03.05), 김윤석 겸임교수 칼럼. 전문은 원문 링크 참조.</div>
+    </div></details>
+
+    <div class="mybox">
+      <div class="lbl">나의 요약</div>
+      <textarea class="mine" data-key="ko-summary" placeholder="보지 않고 3~5문장으로 요약해 보세요. 대조(스텔러레이터↔토카막)와 전망을 담았는지 확인."></textarea>
+      <div class="count"><span>0</span>자 · 자동 저장됨</div>
+    </div>
+  </section>
+
+  <!-- ===== 2. 프랑스어 기사 ===== -->
+  <section>
+    <div class="sec-head"><div class="num">2</div><h2>프랑스어 기사</h2><span class="flag fr">불 → 한국어 요약</span></div>
+    <div style="font-weight:700;font-size:16px">ITER : la fusion nucléaire est-elle vraiment l’énergie du futur&nbsp;?</div>
+    <div class="artline">Code Climat · Analyse | 2025.02.11 ·
+      <a href="https://www.code-climat.com/iter-fsion-nucleaire-avenir.html" target="_blank" rel="noopener">원문 링크</a></div>
+
+    <div class="lbl">선정 이유</div>
+    <p class="reason">핵융합의 <b>약속(무탄소·무한 연료·안전)</b>과 <b>한계(기술 난제·천문학적 비용·거듭된 지연)</b>를 정면으로 대조한 뒤
+      ‘혁명이냐 유토피아냐’ 딜레마로 맺는 분석 기사다. 장점↔한계 대조와 딜레마 구조가 선명하고 문장이 평이해 요약 훈련에 이상적이다.</p>
+
+    <div class="lbl">제시어 (불 → 한)</div>
+    <table class="kw"><thead><tr><th>Français</th><th>한국어</th></tr></thead><tbody>
+      <tr><td class="fr-w fr-read">la fusion nucléaire</td><td class="ko-w">핵융합</td></tr>
+      <tr><td class="fr-w fr-read">la fission</td><td class="ko-w">핵분열</td></tr>
+      <tr><td class="fr-w fr-read">le confinement magnétique</td><td class="ko-w">자기 밀폐(가둠)</td></tr>
+      <tr><td class="fr-w fr-read">l’aimant supraconducteur</td><td class="ko-w">초전도 자석</td></tr>
+      <tr><td class="fr-w fr-read">le tritium / le deutérium</td><td class="ko-w">삼중수소 / 중수소</td></tr>
+      <tr><td class="fr-w fr-read">le facteur de gain Q</td><td class="ko-w">에너지 증폭률(투입 대비 산출)</td></tr>
+      <tr><td class="fr-w fr-read">les déchets radioactifs</td><td class="ko-w">방사성 폐기물</td></tr>
+      <tr><td class="fr-w fr-read">DEMO (réacteur de démonstration)</td><td class="ko-w">실증로</td></tr>
+    </tbody></table>
+    <div style="font-size:12px;color:var(--sub);margin:-2px 0 6px">💡 프랑스어 칸을 <b>클릭</b>하면 낭독됩니다.</div>
+
+    <div class="lbl">전문용어 설명</div>
+    <table><tbody>
+      <tr><td><span class="term">Tokamak</span></td><td>chambre torique(도넛형) 장치로, 초전도 자석의 자기장으로 플라즈마를 가둔다. ITER의 심장부.</td></tr>
+      <tr><td><span class="term">Q (facteur de gain)</span></td><td>투입 대비 산출 에너지 비율. ITER 목표는 50MW 투입 → 500MW 산출, 즉 Q≥10.</td></tr>
+      <tr><td><span class="term">DEMO</span></td><td>ITER 다음 단계의 실증로. 실제로 전력망에 전기를 공급하는 상용 직전 단계.</td></tr>
+      <tr><td><span class="term">Cadarache</span></td><td>프랑스 남부 ITER 건설지. 지진 안정성과 유럽 과학 거점 근접성 때문에 선정.</td></tr>
+      <tr><td><span class="term">Tritium</span></td><td>반감기 12.3년의 방사성 수소 동위원소로 매우 희귀. 리튬으로부터 증식해야 한다.</td></tr>
+    </tbody></table>
+
+    <div class="ttsbar">
+      <button class="play" id="playAll">🔊 본문 전체 듣기</button>
+      <button class="stop" id="stopAll">■ 정지</button>
+      <label>속도
+        <select id="rate">
+          <option value="0.8">느리게</option>
+          <option value="0.9" selected>조금 느리게</option>
+          <option value="1">보통</option>
+        </select>
+      </label>
+      <label>목소리 <select id="voiceSel"></select></label>
+      <span class="hint">문장을 클릭해도 낭독돼요</span>
+    </div>
+
+    <details class="body" open><summary>본문(발췌) 접기/펼치기</summary><div class="body-inner" id="frBody">
+      <p class="fr-read">La centrale ITER, située à Cadarache, en France, est l’un des projets scientifiques les plus ambitieux du XXIe siècle. Conçue pour prouver la viabilité de la fusion nucléaire, elle pourrait révolutionner le paysage énergétique mondial en offrant une source d’énergie propre et quasi illimitée. Mais ITER est-il réellement la solution énergétique du futur ?</p>
+      <p class="fr-read">ITER est un programme de recherche international impliquant 35 pays. Lancé en 2006, il vise à maîtriser la fusion nucléaire pour remplacer les énergies fossiles et la fission. Les scientifiques visent 500 MW de puissance thermique avec seulement 50 MW injectés — soit dix fois plus d’énergie qu’il n’en consomme (facteur de gain Q ≥ 10).</p>
+      <p class="fr-read">[Avantages] La fusion est présentée comme l’alternative idéale aux énergies fossiles. Le combustible est abondant : le deutérium vient de l’eau de mer, le tritium du lithium. Elle ne produit aucun CO2 et, contrairement à la fission, ne présente aucun risque d’emballement : si l’équilibre du plasma est perturbé, la réaction s’arrête instantanément.</p>
+      <p class="fr-read">[Défis] Le plasma, chauffé à 150 millions de degrés, est extrêmement instable. Le tritium est rare et doit être régénéré à partir du lithium. Les parois du Tokamak, bombardées par des neutrons, se dégradent vite. Enfin, il faut convertir efficacement en électricité une chaleur issue des neutrons.</p>
+      <p class="fr-read">[Limites] Le budget a explosé : prévu à 5 milliards d’euros, il dépasse aujourd’hui 22 milliards. Les délais s’allongent : premier plasma en 2025, tests deutérium-tritium pas avant 2035. Surtout, aucun réacteur n’a encore démontré une production nette d’énergie.</p>
+      <p class="fr-read">[Conclusion] Si ITER réussit, il ouvrira la voie aux centrales commerciales comme DEMO, à partir de 2050-2060. Mais d’ici là, les renouvelables seront déjà bien implantées. ITER est-il vraiment l’énergie du futur ou un rêve trop coûteux ? Seul l’avenir nous le dira.</p>
+      <div class="src">Source : Code Climat, « ITER : la fusion nucléaire est-elle vraiment l’énergie du futur ? » (11/02/2025). Texte abrégé — 전문은 원문 링크 참조.</div>
+    </div></details>
+
+    <div class="mybox">
+      <div class="lbl">나의 요약 (한국어로)</div>
+      <textarea class="mine" data-key="fr-summary" placeholder="불어 기사를 한국어로 요약(B언어 전환 금지). 약속↔한계 대조와 딜레마를 담았는지 확인."></textarea>
+      <div class="count"><span>0</span>자 · 자동 저장됨</div>
+    </div>
+  </section>
+
+  <!-- ===== 3. 제안 요약본 ===== -->
+  <section>
+    <div class="sec-head"><div class="num">3</div><h2>제안 요약본</h2></div>
+    <div class="warnbox">⬇ 먼저 직접 요약을 완성한 뒤에 열어 확인하세요.</div>
+    <div class="reveal" id="reveal">
+      <div class="cover" id="cover">
+        <div>
+          <button id="revealBtn">제안 요약본 열기</button>
+          <small>내 요약을 먼저 끝냈나요? 그다음에 대조하세요.</small>
+        </div>
+      </div>
+
+      <div class="sumcard ko">
+        <h4>① 한국어 기사 — 요약</h4>
+        <p>핵융합은 태양의 에너지 생성 원리를 지상에서 구현해 무한·청정 에너지를 얻으려는 기술로, 기후위기와 AI 데이터센터發 전력수요 급증에 맞설 현실적 대안으로 부상하고 있다.
+        그러나 1억도 플라즈마를 만들어 유지하기가 매우 어려워 강한 자기장으로 가두는 장치가 필요하다. 안정적이지만 코일 제작이 어려운 스텔러레이터와, 단순·저렴하지만 전류 제어가 까다로운 토카막이 있으며, 상용화에 가장 근접한 토카막이 ITER·KSTAR에 채택됐다.
+        한국은 KSTAR로 1억도 플라즈마 유지 등 세계적 기술을 확보했으나 블랭킷·내열재료 등 자체 기술 개발을 서둘러야 하며, 상용화는 2030~2040년대로 전망된다.</p>
+        <div class="logic">논리 구조: 기대(현실적 대안) → 난제 → 방식 대조(스텔러레이터↔토카막) → 성과·과제 → 전망</div>
+      </div>
+
+      <div class="sumcard fr">
+        <h4>② 프랑스어 기사 — 요약 (한국어)</h4>
+        <p>ITER는 35개국이 참여해 태양의 핵융합을 지상에서 재현하려는 세기적 프로젝트로, CO₂ 배출이 없고 연료(중수소·삼중수소)가 사실상 무한하며 핵분열보다 안전해 화석연료의 이상적 대안으로 제시된다.
+        그러나 1억5천만도 플라즈마의 안정적 유지, 희귀한 삼중수소 확보, 중성자를 견디는 재료, 열의 전기 변환 등 기술 난제가 크다.
+        게다가 예산은 50억 → 220억 유로로 폭증했고 일정도 거듭 늦춰졌으며(첫 플라즈마 2025, DT실험 2035), 아직 어떤 융합로도 순 에너지 생산을 실증하지 못했다.
+        따라서 상용로(DEMO)는 빨라야 2050~2060년에나 가능해, 그때쯤이면 재생에너지가 이미 자리잡았을 것이라는 회의도 나온다. 필자는 ‘혁명이냐, 값비싼 유토피아냐’라는 물음으로 맺는다.</p>
+        <div class="logic">논리 구조: 약속(무탄소·무한 연료·안전) ↔ 한계(난제·220억 유로·지연·미실증) → 딜레마(혁명 vs 유토피아)</div>
+      </div>
+
+      <div class="lbl">셀프 체크포인트</div>
+      <ul class="check">
+        <li>두 요약 모두 장점 ‘나열’에 그치지 말고 대조·딜레마(장점↔한계)를 한 문장으로 압축했는가?</li>
+        <li>고유명사(ITER·KSTAR·토카막·DEMO)와 숫자(1억도/1억5천만도, 500MW, Q≥10, 220억 유로, 2035·2050)를 정확히 재현했는가?</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== 도구 ===== -->
+  <div class="tools">
+    <h3>🔎 사전 · 참고</h3>
+    <div class="searchrow">
+      <input id="dictInput" placeholder="단어 입력 (한↔불 자동 판별)" />
+      <button id="dictGo">찾기</button>
+    </div>
+    <div class="dict" id="dictLinks">
+      <a data-t="naver" href="#" target="_blank" rel="noopener">네이버 불한사전</a>
+      <a data-t="larousse" href="#" target="_blank" rel="noopener">Larousse 불불</a>
+      <a data-t="reverso" href="#" target="_blank" rel="noopener">Reverso 예문</a>
+      <a data-t="deepl" href="#" target="_blank" rel="noopener">DeepL 번역</a>
+      <a data-t="conj" href="#" target="_blank" rel="noopener">Le Conjugueur 동사변화</a>
+    </div>
+  </div>
+
+  <!-- ===== 아카이브 ===== -->
+  <div class="arch">
+    <h3>지난 편 아카이브 (원자력·에너지 시리즈)</h3>
+    <ul>
+      <li><b>⑥</b> 핵융합 — 인공태양은 언제 뜰까 · ITER 혁명 vs 유토피아 — <b>2026-07-30</b> (오늘)</li>
+      <li><b>①</b> 차세대 원자로 SMR과 대형 원전 비교 — 2026-07-25</li>
+    </ul>
+  </div>
+
+  <footer>
+    © 2026 HENNI · Résumé du jour. 학습용 자료입니다.<br>
+    입력한 요약·메모는 이 브라우저에만 자동 저장됩니다.
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var LS = window.localStorage;
+  function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},1400);}
+
+  /* ---- notes: load + autosave ---- */
+  var areas=document.querySelectorAll('textarea.mine');
+  areas.forEach(function(a){
+    var key='resume-2026-07-30:'+a.dataset.key;
+    try{var v=LS.getItem(key); if(v!=null){a.value=v;}}catch(e){}
+    var counter=a.parentElement.querySelector('.count span');
+    if(counter) counter.textContent=a.value.length;
+    a.addEventListener('input',function(){
+      if(counter) counter.textContent=a.value.length;
+      try{LS.setItem(key,a.value);}catch(e){}
+    });
+  });
+
+  /* ---- reveal proposed summary ---- */
+  var reveal=document.getElementById('reveal');
+  document.getElementById('revealBtn').addEventListener('click',function(){reveal.classList.add('open');});
+
+  /* ---- TTS ---- */
+  var synth=window.speechSynthesis;
+  var voices=[], frVoices=[];
+  var voiceSel=document.getElementById('voiceSel');
+  function loadVoices(){
+    voices=synth?synth.getVoices():[];
+    frVoices=voices.filter(function(v){return /^fr/i.test(v.lang);});
+    voiceSel.innerHTML='';
+    if(!frVoices.length){var o=document.createElement('option');o.textContent='(프랑스어 음성 없음)';voiceSel.appendChild(o);return;}
+    frVoices.forEach(function(v,i){var o=document.createElement('option');o.value=i;o.textContent=v.name.replace(/Microsoft |Google /,'');voiceSel.appendChild(o);});
+  }
+  if(synth){ loadVoices(); if(typeof synth.onvoiceschanged!=='undefined'){synth.onvoiceschanged=loadVoices;} }
+
+  function speak(text){
+    if(!synth){toast('이 브라우저는 음성 낭독을 지원하지 않아요');return;}
+    synth.cancel();
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(document.getElementById('rate').value)||0.9;
+    var idx=parseInt(voiceSel.value,10);
+    if(frVoices.length && !isNaN(idx) && frVoices[idx]) u.voice=frVoices[idx];
+    synth.speak(u);
+  }
+  function speakAll(){
+    if(!synth){toast('이 브라우저는 음성 낭독을 지원하지 않아요');return;}
+    synth.cancel();
+    var ps=document.querySelectorAll('#frBody p.fr-read');
+    var rate=parseFloat(document.getElementById('rate').value)||0.9;
+    var idx=parseInt(voiceSel.value,10);
+    ps.forEach(function(p){
+      var u=new SpeechSynthesisUtterance(p.textContent);
+      u.lang='fr-FR'; u.rate=rate;
+      if(frVoices.length && !isNaN(idx) && frVoices[idx]) u.voice=frVoices[idx];
+      synth.speak(u);
+    });
+  }
+  document.getElementById('playAll').addEventListener('click',speakAll);
+  document.getElementById('stopAll').addEventListener('click',function(){if(synth)synth.cancel();});
+  document.addEventListener('click',function(e){
+    var el=e.target.closest('.fr-read');
+    if(el && !el.closest('a')){ speak(el.textContent.replace(/^\[[^\]]*\]\s*/,'')); }
+  });
+
+  /* ---- dictionary ---- */
+  function isKo(s){return /[가-힣]/.test(s);}
+  function buildLinks(w){
+    w=(w||'').trim(); var q=encodeURIComponent(w);
+    var map={
+      naver: w? 'https://dict.naver.com/frkodict/#/search?query='+q : 'https://dict.naver.com/frkodict/',
+      larousse: w? 'https://www.larousse.fr/dictionnaires/francais/'+q : 'https://www.larousse.fr/dictionnaires/francais',
+      reverso: w? (isKo(w)?'https://context.reverso.net/translation/korean-french/'+q:'https://context.reverso.net/translation/french-korean/'+q) : 'https://context.reverso.net/translation/',
+      deepl: w? (isKo(w)?'https://www.deepl.com/translator#ko/fr/'+q:'https://www.deepl.com/translator#fr/ko/'+q) : 'https://www.deepl.com/translator',
+      conj: w? 'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html' : 'https://leconjugueur.lefigaro.fr/'
+    };
+    document.querySelectorAll('#dictLinks a').forEach(function(a){a.href=map[a.dataset.t]||'#';});
+  }
+  buildLinks('');
+  var input=document.getElementById('dictInput');
+  document.getElementById('dictGo').addEventListener('click',function(){buildLinks(input.value);toast('사전 링크가 “'+ (input.value||'기본') +'”(으)로 설정됐어요');});
+  input.addEventListener('input',function(){buildLinks(input.value);});
+  input.addEventListener('keydown',function(e){if(e.key==='Enter'){buildLinks(input.value);var a=document.querySelector('#dictLinks a[data-t="naver"]');if(a)window.open(a.href,'_blank');}});
+})();
+</script>
+</body>
+</html>
