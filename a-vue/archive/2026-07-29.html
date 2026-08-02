@@ -1,0 +1,476 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Traduction à vue",
+  "schemaVersion": 1,
+  "description": "매일 한 주제 양방향(한↔불) 문장구역(sight translation) 훈련 페이지. 의미 단위 끊어읽기(/) 지문, 낭독, 모범 문장구역, 프랑스어↔한국어 어순·구조 변환 클리닉. 낭독·사전·요약 기능 포함. 첫 편: AI 규제."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traduction à vue — 매일 한 지문 양방향 문장구역</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f2f4f6; --paper:#ffffff; --ink:#1c2530; --muted:#6b7683;
+    --line:#e2e7ec; --accent:#1f5f8b; --accent2:#b23a48; --accent-soft:#e7eef4;
+    --tag:#eaf0f2; --tag-ink:#28506b; --hl:#fff2b8; --ok:#1f7a54; --bad:#b23a48;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,'D2Coding',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:27px;line-height:1.25;margin:0 0 12px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:14px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .dir{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle;}
+  .dir.ab{background:#e7eef4;color:#1f5f8b;} .dir.ba{background:#f5e9ea;color:#b23a48;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px;}
+  .sect-h .n{font-family:var(--sans);font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sect-sub{font-size:12.5px;color:var(--muted);margin:8px 0 12px;}
+  .goal{font-size:12px;color:var(--accent2);font-weight:600;}
+  .body-fr{font-family:var(--serif);font-size:17px;line-height:1.7;}
+  .body-fr p{margin:0 0 13px;}
+  .ko{font-size:14.5px;color:#38424e;background:#f7f9fa;border-left:3px solid var(--line);padding:10px 13px;border-radius:0 8px 8px 0;margin:6px 0 0;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin:6px 0 14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  /* 문장구역 지문: 의미 단위 끊어읽기 */
+  .avue{font-family:var(--serif);font-size:17.5px;line-height:2.0;}
+  .avue .cut{display:inline;}
+  .avue .cut::before{content:'/';color:var(--accent2);opacity:.5;margin:0 5px;font-weight:700;}
+  .src-ko{font-family:var(--sans);font-size:16px;line-height:2.0;color:#25303a;background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .src-ko .cut::before{content:'/';color:var(--accent2);opacity:.5;margin:0 5px;font-weight:700;}
+  .srcbox{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  table.grid{width:100%;border-collapse:collapse;font-size:14px;}
+  table.grid td,table.grid th{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  table.grid th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  table.cheat tr td:first-child{font-family:var(--serif);font-weight:700;color:var(--accent);width:38%;}
+  table.conv tr td:nth-child(1){font-family:var(--serif);color:var(--accent);font-weight:700;width:28%;}
+  table.conv tr td:nth-child(2){width:34%;font-size:13.5px;}
+  table.conv tr td:nth-child(3){font-family:var(--serif);font-size:13.5px;color:#38424e;}
+  .task{font-size:12.5px;color:var(--accent2);font-weight:600;margin:11px 0 4px;}
+  details.reveal{margin-top:12px;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  details.reveal>summary{cursor:pointer;list-style:none;padding:9px 13px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);}
+  details.reveal>summary::-webkit-details-marker{display:none}
+  details.reveal>summary::before{content:'▸ ';}
+  details.reveal[open]>summary::before{content:'▾ ';}
+  details.reveal .rv{padding:12px 15px;font-size:14.5px;line-height:1.68;}
+  details.reveal .rv .fr{font-family:var(--serif);font-size:15.5px;}
+  details.reveal .rv .lab{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin:8px 0 2px;}
+  .note{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px;margin-top:12px;line-height:1.6;}
+  .note b{color:var(--accent);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .routine{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .routine span{background:var(--tag);color:var(--tag-ink);border-radius:8px;padding:6px 11px;font-size:12.5px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#18475f;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:88px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Traduction à vue<small>매일 한 지문 · 양방향 문장구역</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-29-a-vue-ia">
+        <div class="kicker">n° 1 · 매일 새 지문</div>
+        <h1 class="title">AI 규제 — Réguler l'intelligence artificielle</h1>
+        <div class="meta">
+          <span><b>훈련</b> 문장구역(sight translation) · 눈으로 읽으며 즉시 통역</span>
+          <span><b>방향</b> 한↔불 양방향</span>
+        </div>
+        <div class="why">
+          <span class="lab">문장구역이란? ·</span>
+          글을 <b>보면서</b> 곧바로 목표어로 말하는 훈련. 핵심은 <b>의미 단위(sens)로 끊어</b> 앞에서부터 처리하고, 프랑스어의 후치 수식·수동태·명사구문을 한국어 어순으로 <b>즉시 재구성</b>하는 것. 지문의 <b style="color:var(--accent2)">/</b> 표시가 끊어읽기 지점입니다.
+        </div>
+        <div class="task">오늘 루틴 (20분)</div>
+        <div class="routine">
+          <span>① 불→한 지문 끊어읽기 통역 + 녹음</span>
+          <span>② 한→불 지문 끊어읽기 통역 + 녹음</span>
+          <span>③ 모범과 대조 → 구조 변환 클리닉 복습</span>
+          <span>④ 다시 한 번, 멈춤 없이</span>
+        </div>
+      </article>
+
+      <!-- 1. 배경 + 제시어 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">1</span> 배경 &amp; 제시어</div>
+        <div class="sect-sub">지문에 나오는 핵심어를 먼저 입에 올려 두고 시작한다. <span class="goal">→ 분야 배경지식</span></div>
+        <div class="ko">2024년 발효된 EU의 <b>AI법(AI Act)</b>은 단계적으로 적용된다(2025.2 금지 조항, 2025.8 범용 AI, 2026.8 고위험 시스템 전면). 프랑스는 2025년 2월 파리에서 <b>AI 행동 정상회의</b>를 열었다. 한국은 2026년 1월 <b>인공지능 기본법</b>을 시행해 AI 규제를 전면 시행한 세계 최초 국가가 됐다.</div>
+        <table class="grid cheat" style="margin-top:14px">
+          <tr><th>français</th><th>한국어</th></tr>
+          <tr><td>l'AI Act / le règlement sur l'IA</td><td>AI법 / 인공지능 규정</td></tr>
+          <tr><td>entrer en vigueur / entrer en application</td><td>발효되다 / 시행되다</td></tr>
+          <tr><td>les systèmes à haut risque</td><td>고위험 시스템</td></tr>
+          <tr><td>une loi-cadre</td><td>기본법</td></tr>
+          <tr><td>l'IA à fort impact</td><td>고영향 AI</td></tr>
+          <tr><td>l'IA générative</td><td>생성형 AI</td></tr>
+        </table>
+      </section>
+
+      <!-- 2. 불→한 문장구역 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">2</span> <span class="dir ba">불→한</span> 문장구역 지문</div>
+        <div class="sect-sub"><b>/</b> 마다 끊어 앞에서부터 통역. 문장을 끝까지 기다리지 말 것. <span class="goal">→ 어순·구조 즉시 재구성</span></div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 지문 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.8">느리게</option><option value="0.9" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <div class="avue body-fr srcbox">
+          <p>L'Union européenne a fait un pari<span class="cut"></span> : encadrer l'intelligence artificielle<span class="cut"></span> sans étouffer l'innovation.<span class="cut"></span> Son règlement, l'AI Act,<span class="cut"></span> est entré en vigueur le 1er août 2024,<span class="cut"></span> mais il s'applique par étapes.<span class="cut"></span> Depuis février 2025,<span class="cut"></span> certaines pratiques jugées inacceptables sont interdites ;<span class="cut"></span> les règles sur les modèles d'usage général suivent en août 2025 ;<span class="cut"></span> et à partir d'août 2026,<span class="cut"></span> les obligations les plus lourdes<span class="cut"></span> viseront les systèmes dits « à haut risque »,<span class="cut"></span> dans des domaines comme la santé, l'emploi ou la justice.<span class="cut"></span> La logique est simple :<span class="cut"></span> plus un système peut nuire aux droits des citoyens,<span class="cut"></span> plus il est encadré.<span class="cut"></span> Reste une question :<span class="cut"></span> l'Europe, championne de la régulation,<span class="cut"></span> saura-t-elle aussi devenir<span class="cut"></span> une championne de l'innovation ?</p>
+        </div>
+        <div class="task">▷ 끊어읽기로 한국어 통역 → 녹음 후 모범과 대조</div>
+        <details class="reveal"><summary>모범 문장구역 (한국어) 보기</summary>
+          <div class="rv">유럽연합은 한 가지 승부수를 던졌습니다. 혁신을 억누르지 않으면서 인공지능을 규율하겠다는 것입니다. 이 규정, 이른바 AI법은 2024년 8월 1일 발효됐지만, 단계적으로 적용됩니다. 2025년 2월부터는 받아들일 수 없다고 여겨지는 일부 관행이 금지됐고, 범용 AI 모델에 대한 규칙은 2025년 8월에 뒤따르며, 2026년 8월부터는 가장 무거운 의무가 보건·고용·사법 같은 분야의 이른바 '고위험' 시스템을 겨냥합니다. 논리는 단순합니다. 시스템이 시민의 권리를 해칠 수 있을수록, 더 강하게 규율된다는 것입니다. 다만 물음이 하나 남습니다. 규제의 챔피언인 유럽이 혁신의 챔피언도 될 수 있을까요?
+            <span class="lab">구조 포인트</span>① «les systèmes dits « à haut risque »» → '이른바 고위험 시스템'(dit 처리). ② «plus… plus…» → '~할수록 더 ~하다' 상관구문. ③ 수사의문 «saura-t-elle… ?»은 물음 그대로 살리기.
+          </div>
+        </details>
+      </section>
+
+      <!-- 3. 한→불 문장구역 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">3</span> <span class="dir ab">한→불</span> 문장구역 지문</div>
+        <div class="sect-sub">한국어의 긴 <b>전치 수식</b>을 프랑스어에서는 관계절·분사로 <b>뒤로</b> 넘긴다. <span class="goal">→ 후치 재구성</span></div>
+        <div class="avue src-ko">
+          한국은 2026년 1월 인공지능 기본법을 시행하며,<span class="cut"></span> AI 규제법을 전면적으로 시행한<span class="cut"></span> 세계 최초의 나라가 됐습니다.<span class="cut"></span> 유럽연합이 먼저 AI법을 만들었지만<span class="cut"></span> 단계적으로 적용하는 사이,<span class="cut"></span> 한국이 전면 시행에서 앞선 것입니다.<span class="cut"></span> 이 법은 3년마다<span class="cut"></span> 국가 인공지능 기본계획을 세우도록 하고,<span class="cut"></span> 대통령 직속<span class="cut"></span> 국가인공지능위원회의 법적 근거를 마련했습니다.<span class="cut"></span> 특히 사람들에게 큰 영향을 미치는 '고영향 AI'와<span class="cut"></span> 생성형 AI에 대해서는<span class="cut"></span> 안전성과 신뢰를 확보하기 위한 의무를 부과합니다.<span class="cut"></span> 요컨대 한국의 전략은<span class="cut"></span> 육성과 규제를 동시에 추구하는 것입니다.
+        </div>
+        <div class="task">▷ 끊어읽기로 프랑스어 통역 → 녹음 후 모범과 대조</div>
+        <details class="reveal"><summary>모범 문장구역 (français) 보기</summary>
+          <div class="rv"><span class="fr">En janvier 2026, la Corée a mis en application sa loi-cadre sur l'intelligence artificielle, devenant le premier pays au monde à appliquer pleinement une législation sur l'IA. Alors que l'Union européenne, qui avait légiféré la première, procède par étapes, la Corée a pris les devants sur l'application intégrale. Cette loi impose d'élaborer tous les trois ans un plan national pour l'IA et donne une base juridique au Comité national de l'IA, placé sous l'autorité directe du président. Elle prévoit surtout des obligations de sécurité et de confiance pour l'IA générative et pour l'IA dite « à fort impact », celle qui affecte le plus les citoyens. En somme, la stratégie coréenne consiste à promouvoir et à réguler en même temps.</span>
+            <span class="lab">구조 포인트</span>① «사람들에게 큰 영향을 미치는 고영향 AI» → 후치: «l'IA dite « à fort impact », celle qui affecte le plus les citoyens». ② «~한 세계 최초의 나라가 됐다» → 분사구문 «devenant le premier pays…». ③ «동시에 추구» → «à la fois / en même temps».
+          </div>
+        </details>
+      </section>
+
+      <!-- 4. 구조 변환 클리닉 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">4</span> 구조 변환 클리닉 · 어순 뒤집기</div>
+        <div class="sect-sub">문장구역이 막히는 지점은 대개 <b>어순·구조</b>. 오늘의 패턴을 손에 익힌다. <span class="goal">→ 즉시 재구성</span></div>
+        <table class="grid conv">
+          <tr><th>프랑스어 구조</th><th>문장구역 요령</th><th>예</th></tr>
+          <tr><td>관계절 후치 «N qui/que…»</td><td>짧으면 앞에서 수식, 길면 끊고 «그런데 그것은…»</td><td>un système qui peut nuire → 해를 끼칠 수 있는 시스템</td></tr>
+          <tr><td>명사구문 (nominalisation)</td><td>한국어는 동사로 풀어서</td><td>l'encadrement de l'IA → AI를 규율하는 것</td></tr>
+          <tr><td>수동태 «être + p.p.»</td><td>능동·무주어로 전환</td><td>les pratiques sont interdites → 관행이 금지된다 / (당국이) 금지한다</td></tr>
+          <tr><td>«dit(e) / prétendu»</td><td>'이른바, ~라 불리는'</td><td>les systèmes dits à haut risque → 이른바 고위험 시스템</td></tr>
+          <tr><td>상관구문 «plus… plus…»</td><td>'~할수록 더 ~하다'</td><td>plus… nuire, plus… encadré → 해칠수록 더 규율된다</td></tr>
+          <tr><td>한국어 긴 전치 수식 → 불어</td><td>관계절·분사로 뒤로 넘기기</td><td>영향을 미치는 AI → l'IA qui affecte…</td></tr>
+        </table>
+        <div class="note"><b>핵심 ·</b> 문장구역은 '기다리기'가 아니라 '앞에서부터 밀고 가기'. 프랑스어를 들으면(읽으면) 주어·동사를 잡고 <b>즉시 절을 열어</b>, 뒤에 오는 수식·목적어를 한국어에서 <b>따라붙이거나 새 문장으로</b> 처리한다. entrer en vigueur(발효)와 entrer en application/시행은 구분.</div>
+        <div class="tags">
+          <span class="tag">문장구역</span><span class="tag">AI 규제</span><span class="tag">양방향</span><span class="tag">어순 변환</span>
+        </div>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>(첫 편) AI 규제 — EU AI Act · 한국 AI 기본법 — 2026-07-29</li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Traduction à vue. All rights reserved.<br>매일 아침 새 지문으로 자동 갱신됩니다. 모범 문장구역은 학습용 예시입니다.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 지문에서 <b>단어를 드래그</b>하면 바로 검색·낭독돼요.</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 오늘의 정리</h3>
+        <div class="sum-lab">막혔던 구조/표현 적기</div>
+        <textarea class="sum" id="sumKo" placeholder="예) dit(e) 처리, 수동태 능동화, 명사구문 풀기…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">한 문장 다시 써 보기 (불어)</div>
+        <textarea class="sum" id="sumFr" placeholder="Reformulez une phrase du texte…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 이 지문을 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      papago:'https://papago.naver.com/?sk=fr&tk=ko&st='+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('tavKo_'+id)||''; fr.value=localStorage.getItem('tavFr_'+id)||''; }catch(e){} }
+  function count(){
+    cKo.textContent=ko.value.length+'자';
+    var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0;
+    cFr.textContent=m+' mots';
+  }
+  function save(){ try{ localStorage.setItem('tavKo_'+id,ko.value); localStorage.setItem('tavFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page KO<->FR dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 통역 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','통역 팁: 연어·오용 주의 한 줄.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2').replace(/\[\[([^\]]*)\]\]/g,'$1').replace(/'''?/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var fr=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(fr){ fr=fr.split(/\n==\s*\{\{langue\|/)[0]; } else { fr=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=fr.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 불↔한</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>

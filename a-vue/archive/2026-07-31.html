@@ -1,0 +1,477 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Traduction A Vue",
+  "schemaVersion": 1,
+  "description": "매일 한 주제 양방향(한↔불) 문장구역(sight translation) 훈련 페이지 'Traduction à vue' — 의미 단위 끊어읽기(/) 지문, 낭독, 모범 문장구역, 어순·구조 변환 클리닉. 낭독·사전·요약 기능 포함. 오늘 편 2026-07-31 금리·통화정책."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traduction à vue — 매일 한 지문 양방향 문장구역</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f2f4f6; --paper:#ffffff; --ink:#1c2530; --muted:#6b7683;
+    --line:#e2e7ec; --accent:#1f5f8b; --accent2:#b23a48; --accent-soft:#e7eef4;
+    --tag:#eaf0f2; --tag-ink:#28506b; --hl:#fff2b8; --ok:#1f7a54; --bad:#b23a48;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,'D2Coding',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:27px;line-height:1.25;margin:0 0 12px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:14px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .dir{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle;}
+  .dir.ab{background:#e7eef4;color:#1f5f8b;} .dir.ba{background:#f5e9ea;color:#b23a48;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px;}
+  .sect-h .n{font-family:var(--sans);font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sect-sub{font-size:12.5px;color:var(--muted);margin:8px 0 12px;}
+  .goal{font-size:12px;color:var(--accent2);font-weight:600;}
+  .body-fr{font-family:var(--serif);font-size:17px;line-height:1.7;}
+  .body-fr p{margin:0 0 13px;}
+  .ko{font-size:14.5px;color:#38424e;background:#f7f9fa;border-left:3px solid var(--line);padding:10px 13px;border-radius:0 8px 8px 0;margin:6px 0 0;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin:6px 0 14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  /* 문장구역 지문: 의미 단위 끊어읽기 */
+  .avue{font-family:var(--serif);font-size:17.5px;line-height:2.0;}
+  .avue .cut{display:inline;}
+  .avue .cut::before{content:'/';color:var(--accent2);opacity:.5;margin:0 5px;font-weight:700;}
+  .src-ko{font-family:var(--sans);font-size:16px;line-height:2.0;color:#25303a;background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .src-ko .cut::before{content:'/';color:var(--accent2);opacity:.5;margin:0 5px;font-weight:700;}
+  .srcbox{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  table.grid{width:100%;border-collapse:collapse;font-size:14px;}
+  table.grid td,table.grid th{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  table.grid th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  table.cheat tr td:first-child{font-family:var(--serif);font-weight:700;color:var(--accent);width:38%;}
+  table.conv tr td:nth-child(1){font-family:var(--serif);color:var(--accent);font-weight:700;width:28%;}
+  table.conv tr td:nth-child(2){width:34%;font-size:13.5px;}
+  table.conv tr td:nth-child(3){font-family:var(--serif);font-size:13.5px;color:#38424e;}
+  .task{font-size:12.5px;color:var(--accent2);font-weight:600;margin:11px 0 4px;}
+  details.reveal{margin-top:12px;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  details.reveal>summary{cursor:pointer;list-style:none;padding:9px 13px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);}
+  details.reveal>summary::-webkit-details-marker{display:none}
+  details.reveal>summary::before{content:'▸ ';}
+  details.reveal[open]>summary::before{content:'▾ ';}
+  details.reveal .rv{padding:12px 15px;font-size:14.5px;line-height:1.68;}
+  details.reveal .rv .fr{font-family:var(--serif);font-size:15.5px;}
+  details.reveal .rv .lab{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin:8px 0 2px;}
+  .note{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px;margin-top:12px;line-height:1.6;}
+  .note b{color:var(--accent);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .routine{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .routine span{background:var(--tag);color:var(--tag-ink);border-radius:8px;padding:6px 11px;font-size:12.5px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#18475f;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:88px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Traduction à vue<small>매일 한 지문 · 양방향 문장구역</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-07-31-a-vue-taux">
+        <div class="kicker">n° 3 · 매일 새 지문</div>
+        <h1 class="title">금리·통화정책 — Les banques centrales resserrent la vis</h1>
+        <div class="meta">
+          <span><b>훈련</b> 문장구역(sight translation) · 눈으로 읽으며 즉시 통역</span>
+          <span><b>방향</b> 한↔불 양방향</span>
+        </div>
+        <div class="why">
+          <span class="lab">문장구역이란? ·</span>
+          글을 <b>보면서</b> 곧바로 목표어로 말하는 훈련. 핵심은 <b>의미 단위(sens)로 끊어</b> 앞에서부터 처리하고, 프랑스어의 후치 수식·수동태·분사구문을 한국어 어순으로 <b>즉시 재구성</b>하는 것. 지문의 <b style="color:var(--accent2)">/</b> 표시가 끊어읽기 지점입니다.
+        </div>
+        <div class="task">오늘 루틴 (20분)</div>
+        <div class="routine">
+          <span>① 불→한 지문 끊어읽기 통역 + 녹음</span>
+          <span>② 한→불 지문 끊어읽기 통역 + 녹음</span>
+          <span>③ 모범과 대조 → 구조 변환 클리닉 복습</span>
+          <span>④ 다시 한 번, 멈춤 없이</span>
+        </div>
+      </article>
+
+      <!-- 1. 배경 + 제시어 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">1</span> 배경 &amp; 제시어</div>
+        <div class="sect-sub">지문에 나오는 핵심어를 먼저 입에 올려 두고 시작한다. <span class="goal">→ 분야 배경지식</span></div>
+        <div class="ko">2026년 들어 물가가 다시 고개를 들면서, 주요국 중앙은행이 완화에서 <b>긴축</b>으로 방향을 틀었다. <b>유럽중앙은행(BCE)</b>은 6월 11일 예금금리를 0.25%포인트 올려 <b>2.25%</b>로, 2023년 9월 이후 첫 인상을 단행했고, 7월 23일 회의에서는 금리를 동결했다. <b>한국은행</b>도 7월 16일 기준금리를 2.50%에서 <b>2.75%</b>로 올리며 14개월간 이어진 동결 기조를 끝냈다.</div>
+        <table class="grid cheat" style="margin-top:14px">
+          <tr><th>français</th><th>한국어</th></tr>
+          <tr><td>le taux directeur</td><td>기준금리 / 정책금리</td></tr>
+          <tr><td>la facilité de dépôt</td><td>예금금리 (수신금리)</td></tr>
+          <tr><td>le resserrement monétaire</td><td>통화 긴축</td></tr>
+          <tr><td>l'inflation sous-jacente</td><td>근원 물가 (근원 인플레이션)</td></tr>
+          <tr><td>le Conseil des gouverneurs</td><td>(BCE) 정책이사회 / 정책위원회</td></tr>
+          <tr><td>les points de base (pb)</td><td>베이시스포인트 (bp)</td></tr>
+        </table>
+      </section>
+
+      <!-- 2. 불→한 문장구역 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">2</span> <span class="dir ba">불→한</span> 문장구역 지문</div>
+        <div class="sect-sub"><b>/</b> 마다 끊어 앞에서부터 통역. 문장을 끝까지 기다리지 말 것. <span class="goal">→ 어순·구조 즉시 재구성</span></div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 지문 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.8">느리게</option><option value="0.9" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <div class="avue body-fr srcbox">
+          <p>La Banque centrale européenne a relevé,<span class="cut"></span> le 11 juin dernier,<span class="cut"></span> son principal taux directeur<span class="cut"></span> — celui de la facilité de dépôt —<span class="cut"></span> de 25 points de base,<span class="cut"></span> le portant ainsi à 2,25 %.<span class="cut"></span> Il s'agit de la première hausse<span class="cut"></span> décidée à Francfort<span class="cut"></span> depuis septembre 2023.<span class="cut"></span> Confrontée à une inflation<span class="cut"></span> remontée à 3,2 % en mai,<span class="cut"></span> bien au-delà de la cible de 2 %,<span class="cut"></span> l'institution a estimé<span class="cut"></span> qu'un resserrement s'imposait.<span class="cut"></span> Les taux appliqués aux banques<span class="cut"></span> — dépôt, refinancement et prêt marginal —<span class="cut"></span> ont été fixés respectivement<span class="cut"></span> à 2,25, 2,40 et 2,65 %.<span class="cut"></span> Lors de la réunion suivante, le 23 juillet,<span class="cut"></span> la BCE a néanmoins maintenu ses taux,<span class="cut"></span> préférant marquer une pause,<span class="cut"></span> tiraillée entre une inflation persistante<span class="cut"></span> et une croissance encore fragile.</p>
+        </div>
+        <div class="task">▷ 끊어읽기로 한국어 통역 → 녹음 후 모범과 대조</div>
+        <details class="reveal"><summary>모범 문장구역 (한국어) 보기</summary>
+          <div class="rv">유럽중앙은행이 인상했습니다, 지난 6월 11일에요. 주요 정책금리를, 그러니까 예금금리를 0.25%포인트 올린 겁니다. 그렇게 해서 2.25%까지 끌어올렸습니다. 이번이 첫 인상인데요, 프랑크푸르트가 인상을 결정한 건 2023년 9월 이후 처음입니다. 5월 물가가 3.2%까지, 목표치인 2%를 크게 웃도는 수준으로 다시 오르자, 유럽중앙은행은 판단했습니다, 긴축이 불가피하다고 말입니다. 은행에 적용되는 금리, 즉 예금·재융자·한계대출 금리는 각각 2.25%, 2.40%, 2.65%로 정해졌습니다. 다만 이어진 7월 23일 회의에서는, 유럽중앙은행이 금리를 동결했습니다. 숨 고르기를 택한 건데요, 좀처럼 꺾이지 않는 물가와 여전히 취약한 성장 사이에서 고심한 결과입니다.
+            <span class="lab">구조 포인트</span>① 제롱디프 «…, le portant ainsi à 2,25 %» → 끊고 '그렇게 해서 ~로 올렸다'로 뒤에서. ② 전치 분사구 «Confrontée à une inflation…, l'institution…» → '~하자, ~은'으로 이유절 먼저. ③ 수동태 «ont été fixés respectivement à…» → 능동·무주어 '~로 정해졌다', respectivement은 '각각'.
+          </div>
+        </details>
+      </section>
+
+      <!-- 3. 한→불 문장구역 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">3</span> <span class="dir ab">한→불</span> 문장구역 지문</div>
+        <div class="sect-sub">한국어의 긴 <b>전치 수식</b>과 '~하며/~한 셈'은 프랑스어에서 <b>분사·제롱디프</b>로 뒤로 넘긴다. <span class="goal">→ 후치 재구성</span></div>
+        <div class="avue src-ko">
+          한국은행 금융통화위원회는<span class="cut"></span> 지난 7월 16일,<span class="cut"></span> 기준금리를 2.50%에서 2.75%로<span class="cut"></span> 0.25%포인트 인상했습니다.<span class="cut"></span> 위원 일곱 명 전원이 찬성한 결정으로,<span class="cut"></span> 2023년 1월 이후<span class="cut"></span> 3년 6개월 만의 인상입니다.<span class="cut"></span> 한국은행은<span class="cut"></span> 물가 상승 압력이 상당 기간 이어질 것으로 본다고 밝혔습니다.<span class="cut"></span> 여기에<span class="cut"></span> 반도체 경기 호조로 성장세가 강해지고 있는 점,<span class="cut"></span> 그리고 가계부채와 수도권 집값 상승으로<span class="cut"></span> 금융 불균형 위험이 커지고 있는 점도<span class="cut"></span> 인상의 배경으로 꼽았습니다.<span class="cut"></span> 지난해 5월 인하 이후<span class="cut"></span> 14개월간 이어져 온 동결 기조를 끝내고,<span class="cut"></span> 이제 긴축으로 방향을 튼 셈입니다.
+        </div>
+        <div class="task">▷ 끊어읽기로 프랑스어 통역 → 녹음 후 모범과 대조</div>
+        <details class="reveal"><summary>모범 문장구역 (français) 보기</summary>
+          <div class="rv"><span class="fr">Le comité de politique monétaire de la Banque de Corée a relevé, le 16 juillet dernier, son taux directeur de 2,50 à 2,75 %, soit une hausse de 25 points de base. Adoptée à l'unanimité de ses sept membres, c'est la première hausse depuis janvier 2023, il y a trois ans et demi. La Banque de Corée a indiqué qu'elle s'attendait à des pressions inflationnistes durables. Elle a également cité, parmi les raisons de cette décision, une croissance renforcée par la bonne santé du secteur des semi-conducteurs, ainsi que des risques de déséquilibres financiers accrus par l'endettement des ménages et la hausse des prix de l'immobilier dans la région de Séoul. En mettant fin à quatorze mois de statu quo, entamés après la baisse de mai dernier, l'institution amorce ainsi un tournant vers le resserrement.</span>
+            <span class="lab">구조 포인트</span>① «위원 전원이 찬성한 결정» (전치 수식) → 과거분사 후치 «Adoptée à l'unanimité…, c'est…». ② «반도체 호조로 강해지는 성장세» → 분사 후치 «une croissance renforcée par…». ③ «동결 기조를 끝내고 ~ 방향을 튼 셈» → 제롱디프 «En mettant fin à…, l'institution amorce…».
+          </div>
+        </details>
+      </section>
+
+      <!-- 4. 구조 변환 클리닉 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">4</span> 구조 변환 클리닉 · 분사·제롱디프</div>
+        <div class="sect-sub">문장구역이 막히는 지점은 대개 <b>어순·구조</b>. 오늘은 <b>분사구문</b>을 손에 익힌다. <span class="goal">→ 즉시 재구성</span></div>
+        <table class="grid conv">
+          <tr><th>프랑스어 구조</th><th>문장구역 요령</th><th>예</th></tr>
+          <tr><td>제롱디프 «en + p.prés.»</td><td>'~하면서 / ~함으로써', 앞 절 먼저</td><td>En mettant fin à…, il amorce → ~을 끝내며 방향을 튼다</td></tr>
+          <tr><td>제롱디프 후치 «…, le portant à»</td><td>끊고 '그렇게 ~로 만들며'로 뒤에서</td><td>…de 25 pb, le portant à 2,25 % → 그렇게 2.25%로</td></tr>
+          <tr><td>과거분사 후치 «N + p.p. par…»</td><td>끊고 '~에 의해 ~된' 뒤에서</td><td>une croissance renforcée par… → ~로 강해진 성장세</td></tr>
+          <tr><td>전치 분사구 «Confrontée à…, N…»</td><td>이유절 '~에 직면해/~하자' 먼저</td><td>Confrontée à l'inflation, elle… → 물가에 직면해 ~은</td></tr>
+          <tr><td>수동태 + «respectivement»</td><td>능동·무주어 + '각각', 나열 순서대로</td><td>ont été fixés respectivement à A, B → 각각 A, B로 정해졌다</td></tr>
+          <tr><td>상관구문 «tiraillé entre A et B»</td><td>'A와 B 사이에서 ~하다'</td><td>tiraillée entre inflation et croissance → 물가와 성장 사이에서 고심</td></tr>
+        </table>
+        <div class="note"><b>핵심 ·</b> 문장구역은 '기다리기'가 아니라 '앞에서부터 밀고 가기'. 프랑스어 명사 뒤·문미에 붙는 분사구는 <b>일단 핵심을 내뱉고</b> 뒤에서 이어 붙인다. 숫자·용어 주의: <b>25 points de base = 0.25%포인트</b>, <b>à l'unanimité</b>는 '만장일치·전원 찬성', «bien au-delà de la cible»는 '목표치를 크게 웃도는'. <b>taux directeur(정책금리)</b>와 <b>taux de la facilité de dépôt(예금금리)</b>를 혼동하지 말 것.</div>
+        <div class="tags">
+          <span class="tag">문장구역</span><span class="tag">경제·금리</span><span class="tag">통화정책</span><span class="tag">양방향</span><span class="tag">분사구문</span>
+        </div>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>n° 2 · 기후 협상 — COP30 · 한국 2035 NDC — 2026-07-30</li>
+          <li>n° 1 · AI 규제 — EU AI Act · 한국 AI 기본법 — 2026-07-29</li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Traduction à vue. All rights reserved.<br>매일 아침 새 지문으로 자동 갱신됩니다. 모범 문장구역은 학습용 예시입니다.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 지문에서 <b>단어를 드래그</b>하면 바로 검색·낭독돼요.</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 오늘의 정리</h3>
+        <div class="sum-lab">막혔던 구조/표현 적기</div>
+        <textarea class="sum" id="sumKo" placeholder="예) 제롱디프, 과거분사 후치, 수동태 능동화, respectivement…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">한 문장 다시 써 보기 (불어)</div>
+        <textarea class="sum" id="sumFr" placeholder="Reformulez une phrase du texte…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 이 지문을 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      papago:'https://papago.naver.com/?sk=fr&tk=ko&st='+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('tavKo_'+id)||''; fr.value=localStorage.getItem('tavFr_'+id)||''; }catch(e){} }
+  function count(){
+    cKo.textContent=ko.value.length+'자';
+    var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0;
+    cFr.textContent=m+' mots';
+  }
+  function save(){ try{ localStorage.setItem('tavKo_'+id,ko.value); localStorage.setItem('tavFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page KO<->FR dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 통역 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','통역 팁: 연어·오용 주의 한 줄.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2').replace(/\[\[([^\]]*)\]\]/g,'$1').replace(/'''?/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var fr=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(fr){ fr=fr.split(/\n==\s*\{\{langue\|/)[0]; } else { fr=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=fr.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 불↔한</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>

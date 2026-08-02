@@ -1,0 +1,478 @@
+<!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Traduction A Vue",
+  "schemaVersion": 1,
+  "description": "매일 한 주제 양방향(한↔불) 문장구역(sight translation) 훈련 페이지 'Traduction à vue' — 의미 단위 끊어읽기(/) 지문, 낭독, 모범 문장구역, 어순·구조 변환 클리닉. 오늘 편 2026-08-01 해양·환경 공해 조약(BBNJ)."
+}
+</script>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Traduction à vue — 매일 한 지문 양방향 문장구역</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg:#f2f4f6; --paper:#ffffff; --ink:#1c2530; --muted:#6b7683;
+    --line:#e2e7ec; --accent:#1f5f8b; --accent2:#b23a48; --accent-soft:#e7eef4;
+    --tag:#eaf0f2; --tag-ink:#28506b; --hl:#fff2b8; --ok:#1f7a54; --bad:#b23a48;
+    --serif:'Iowan Old Style','Palatino Linotype',Georgia,'Times New Roman',serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,Consolas,'D2Coding',monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;}
+  a{color:var(--accent)}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 18px 80px;}
+  header.top{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px;}
+  .brand{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;}
+  .brand small{display:block;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:4px;}
+  .date{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:start;}
+  @media(max-width:860px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 1px 2px rgba(0,0,0,.03);}
+  .card + .card{margin-top:18px;}
+  .kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px;}
+  h1.title{font-family:var(--serif);font-size:27px;line-height:1.25;margin:0 0 12px;}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);padding:10px 0;margin-bottom:14px;}
+  .meta b{color:var(--ink);font-weight:600;}
+  .dir{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:6px;vertical-align:middle;}
+  .dir.ab{background:#e7eef4;color:#1f5f8b;} .dir.ba{background:#f5e9ea;color:#b23a48;}
+  .why{background:var(--accent-soft);border-radius:10px;padding:12px 15px;font-size:14px;margin-bottom:8px;}
+  .why .lab{font-weight:700;color:var(--accent);}
+  .sect-h{font-family:var(--serif);font-size:19px;margin:0 0 4px;padding-bottom:6px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:9px;}
+  .sect-h .n{font-family:var(--sans);font-size:12px;font-weight:800;color:#fff;background:var(--accent);border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .sect-sub{font-size:12.5px;color:var(--muted);margin:8px 0 12px;}
+  .goal{font-size:12px;color:var(--accent2);font-weight:600;}
+  .body-fr{font-family:var(--serif);font-size:17px;line-height:1.7;}
+  .body-fr p{margin:0 0 13px;}
+  .ko{font-size:14.5px;color:#38424e;background:#f7f9fa;border-left:3px solid var(--line);padding:10px 13px;border-radius:0 8px 8px 0;margin:6px 0 0;}
+  mark{background:var(--hl);padding:0 2px;border-radius:3px;cursor:help;}
+  .tts-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin:6px 0 14px;font-size:13px;}
+  .tts-btn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:6px 13px;font-size:13px;cursor:pointer;font-weight:600;}
+  .tts-btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .tts-btn:hover{opacity:.9;}
+  .tts-lab{color:var(--muted);display:flex;align-items:center;gap:5px;}
+  .tts-bar select{border:1px solid var(--line);border-radius:7px;padding:4px 6px;font-size:12.5px;background:#fff;max-width:170px;}
+  .body-fr p.speaking{background:var(--hl);box-shadow:0 0 0 5px var(--hl);border-radius:4px;}
+  /* 문장구역 지문: 의미 단위 끊어읽기 */
+  .avue{font-family:var(--serif);font-size:17.5px;line-height:2.0;}
+  .avue .cut{display:inline;}
+  .avue .cut::before{content:'/';color:var(--accent2);opacity:.5;margin:0 5px;font-weight:700;}
+  .src-ko{font-family:var(--sans);font-size:16px;line-height:2.0;color:#25303a;background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  .src-ko .cut::before{content:'/';color:var(--accent2);opacity:.5;margin:0 5px;font-weight:700;}
+  .srcbox{background:#fbfcfd;border:1px solid var(--line);border-radius:10px;padding:14px 16px;}
+  table.grid{width:100%;border-collapse:collapse;font-size:14px;}
+  table.grid td,table.grid th{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;}
+  table.grid th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  table.cheat tr td:first-child{font-family:var(--serif);font-weight:700;color:var(--accent);width:38%;}
+  table.conv tr td:nth-child(1){font-family:var(--serif);color:var(--accent);font-weight:700;width:28%;}
+  table.conv tr td:nth-child(2){width:34%;font-size:13.5px;}
+  table.conv tr td:nth-child(3){font-family:var(--serif);font-size:13.5px;color:#38424e;}
+  .task{font-size:12.5px;color:var(--accent2);font-weight:600;margin:11px 0 4px;}
+  details.reveal{margin-top:12px;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
+  details.reveal>summary{cursor:pointer;list-style:none;padding:9px 13px;font-size:13px;font-weight:600;color:var(--accent);background:var(--accent-soft);}
+  details.reveal>summary::-webkit-details-marker{display:none}
+  details.reveal>summary::before{content:'▸ ';}
+  details.reveal[open]>summary::before{content:'▾ ';}
+  details.reveal .rv{padding:12px 15px;font-size:14.5px;line-height:1.68;}
+  details.reveal .rv .fr{font-family:var(--serif);font-size:15.5px;}
+  details.reveal .rv .lab{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;display:block;margin:8px 0 2px;}
+  .note{background:#fbfcfd;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0;padding:11px 14px;font-size:13.5px;margin-top:12px;line-height:1.6;}
+  .note b{color:var(--accent);}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
+  .tag{background:var(--tag);color:var(--tag-ink);border-radius:999px;padding:4px 11px;font-size:13px;}
+  .routine{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+  .routine span{background:var(--tag);color:var(--tag-ink);border-radius:8px;padding:6px 11px;font-size:12.5px;}
+  /* sidebar */
+  .side{position:sticky;top:14px;display:flex;flex-direction:column;gap:16px;}
+  .tool{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px 16px 18px;}
+  .tool h3{margin:0 0 10px;font-size:14px;letter-spacing:.02em;}
+  .lookInput{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:14px;font-family:var(--serif);background:#fff;}
+  .lookRow{display:flex;gap:7px;}
+  .lookRow .lookInput{flex:1;}
+  .goBtn{border:none;background:var(--accent);color:#fff;border-radius:9px;padding:0 15px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
+  .goBtn:hover{background:#18475f;}
+  .goBtn:disabled{opacity:.55;cursor:default;}
+  #dictResult{margin-top:12px;font-size:13.5px;line-height:1.62;background:var(--accent-soft);border-radius:10px;padding:12px 13px;display:none;}
+  #dictResult .term{font-family:var(--serif);font-weight:700;color:var(--accent);font-size:16px;display:block;margin-bottom:4px;}
+  #dictResult.loading{color:var(--muted);font-style:italic;background:var(--tag);}
+  .extlab{font-size:11px;letter-spacing:.04em;color:var(--muted);margin:14px 0 7px;font-weight:600;text-transform:uppercase;}
+  .dictgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .dictgrid a{display:block;text-align:center;text-decoration:none;background:var(--tag);color:var(--ink);border-radius:8px;padding:8px 6px;font-size:12.5px;border:1px solid var(--line);transition:.12s;}
+  .dictgrid a:hover{background:var(--accent-soft);border-color:var(--accent);}
+  .hint{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45;}
+  textarea.sum{width:100%;min-height:88px;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:14px;font-family:var(--sans);resize:vertical;background:#fff;line-height:1.55;}
+  .sum-lab{font-size:12.5px;font-weight:600;margin:10px 0 5px;color:var(--muted);}
+  .counter{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px;}
+  .saved{font-size:11.5px;color:var(--tag-ink);}
+  #popup{position:absolute;z-index:50;display:none;background:var(--ink);border-radius:9px;padding:6px;box-shadow:0 6px 20px rgba(0,0,0,.25);gap:5px;}
+  #popup a{display:inline-block;color:#fff;text-decoration:none;font-size:12px;padding:5px 9px;border-radius:6px;background:rgba(255,255,255,.12);}
+  #popup a:hover{background:rgba(255,255,255,.28);}
+  details.arch{margin-top:18px;}
+  details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Traduction à vue<small>매일 한 지문 · 양방향 문장구역</small></div>
+    <div class="date" id="today"></div>
+  </header>
+
+  <div class="layout">
+    <!-- MAIN -->
+    <main>
+      <article class="card" id="article" data-articleid="2026-08-01-a-vue-hautemer">
+        <div class="kicker">n° 4 · 매일 새 지문</div>
+        <h1 class="title">해양·환경 — Le traité sur la haute mer entre en vigueur</h1>
+        <div class="meta">
+          <span><b>훈련</b> 문장구역(sight translation) · 눈으로 읽으며 즉시 통역</span>
+          <span><b>방향</b> 한↔불 양방향</span>
+        </div>
+        <div class="why">
+          <span class="lab">문장구역이란? ·</span>
+          글을 <b>보면서</b> 곧바로 목표어로 말하는 훈련. 핵심은 <b>의미 단위(sens)로 끊어</b> 앞에서부터 처리하고, 프랑스어의 후치 수식·관계절·수동태를 한국어 어순으로 <b>즉시 재구성</b>하는 것. 지문의 <b style="color:var(--accent2)">/</b> 표시가 끊어읽기 지점입니다.
+        </div>
+        <div class="task">오늘 루틴 (20분)</div>
+        <div class="routine">
+          <span>① 불→한 지문 끊어읽기 통역 + 녹음</span>
+          <span>② 한→불 지문 끊어읽기 통역 + 녹음</span>
+          <span>③ 모범과 대조 → 구조 변환 클리닉 복습</span>
+          <span>④ 다시 한 번, 멈춤 없이</span>
+        </div>
+      </article>
+
+      <!-- 1. 배경 + 제시어 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">1</span> 배경 &amp; 제시어</div>
+        <div class="sect-sub">지문에 나오는 핵심어를 먼저 입에 올려 두고 시작한다. <span class="goal">→ 분야 배경지식</span></div>
+        <div class="ko">2026년 <b>1월 17일</b>, 공해의 생물다양성을 보호하는 첫 국제조약 <b>BBNJ(공해 조약)</b>가 발효됐다. <b>공해</b>는 어느 나라의 관할에도 속하지 않는 배타적경제수역(EEZ) 밖 바다로, 전체 해양의 약 3분의 2를 차지한다. 이 조약은 2023년 6월 채택된 뒤, 지난해 9월 <b>60개국 비준</b> 요건을 채워 120일 만에 발효됐다. 한국은 2025년 3월 <b>동아시아 최초</b>로 비준했고, 2028년에는 칠레와 함께 <b>제4차 유엔 해양회의(UNOC4)</b>를 개최한다.</div>
+        <table class="grid cheat" style="margin-top:14px">
+          <tr><th>français</th><th>한국어</th></tr>
+          <tr><td>la haute mer</td><td>공해 (公海)</td></tr>
+          <tr><td>l'entrée en vigueur</td><td>발효 (효력 발생)</td></tr>
+          <tr><td>la zone économique exclusive (ZEE)</td><td>배타적경제수역 (EEZ)</td></tr>
+          <tr><td>l'aire marine protégée (AMP)</td><td>해양보호구역 (MPA)</td></tr>
+          <tr><td>la ratification / ratifier</td><td>비준 / 비준하다</td></tr>
+          <tr><td>les ressources génétiques marines</td><td>해양유전자원</td></tr>
+        </table>
+      </section>
+
+      <!-- 2. 불→한 문장구역 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">2</span> <span class="dir ba">불→한</span> 문장구역 지문</div>
+        <div class="sect-sub"><b>/</b> 마다 끊어 앞에서부터 통역. 문장을 끝까지 기다리지 말 것. <span class="goal">→ 관계절·후치 수식 즉시 재구성</span></div>
+        <div class="tts-bar">
+          <button id="ttsPlay" class="tts-btn">🔊 지문 듣기</button>
+          <button id="ttsStop" class="tts-btn ghost">■ 정지</button>
+          <span class="tts-lab">속도
+            <select id="ttsRate"><option value="0.8">느리게</option><option value="0.9" selected>조금 느리게</option><option value="1">보통</option></select>
+          </span>
+          <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
+        </div>
+        <div class="avue body-fr srcbox">
+          <p>Le traité sur la haute mer,<span class="cut"></span> que l'on désigne souvent<span class="cut"></span> par l'acronyme anglais BBNJ,<span class="cut"></span> est entré en vigueur<span class="cut"></span> le 17 janvier dernier.<span class="cut"></span> Adopté en juin 2023<span class="cut"></span> au terme de près de vingt ans de négociations,<span class="cut"></span> ce texte est le premier instrument<span class="cut"></span> juridiquement contraignant<span class="cut"></span> qui vise à protéger la biodiversité de la haute mer<span class="cut"></span> — c'est-à-dire l'océan situé au-delà des zones économiques exclusives,<span class="cut"></span> et qui représente près des deux tiers de la surface des mers.<span class="cut"></span> Ces eaux, dont personne n'assurait jusqu'ici la gestion,<span class="cut"></span> échappaient largement à toute régulation.<span class="cut"></span> L'accord permet désormais<span class="cut"></span> de créer des aires marines protégées en haute mer<span class="cut"></span> et rend obligatoires les études d'impact environnemental<span class="cut"></span> pour les activités susceptibles de nuire à l'écosystème.<span class="cut"></span> Il est entré en vigueur<span class="cut"></span> cent vingt jours après avoir franchi<span class="cut"></span> le seuil de soixante ratifications,<span class="cut"></span> atteint en septembre dernier.</p>
+        </div>
+        <div class="task">▷ 끊어읽기로 한국어 통역 → 녹음 후 모범과 대조</div>
+        <details class="reveal"><summary>모범 문장구역 (한국어) 보기</summary>
+          <div class="rv">공해에 관한 조약이 발효됐습니다. 흔히 영어 약칭으로 BBNJ라고 부르는 조약인데요, 지난 1월 17일부터 효력을 갖게 됐습니다. 이 조약은 2023년 6월에 채택됐습니다, 20년 가까운 협상 끝에 말이죠. 최초의 규범인데요, 법적 구속력을 갖는 규범으로서, 공해의 생물다양성을 보호하는 것을 목표로 합니다. 공해란 배타적경제수역 밖에 있는 바다를 말하는데, 전체 해양 면적의 3분의 2에 가깝습니다. 이 해역은, 지금까지 아무도 관리를 맡지 않았던 곳으로, 사실상 어떤 규제도 미치지 않았습니다. 이제 이 조약으로 공해에도 해양보호구역을 지정할 수 있고, 환경영향평가도 의무화됩니다, 생태계에 해를 끼칠 수 있는 활동에 대해서 말이죠. 조약은 발효됐습니다, 60개국 비준이라는 문턱을 넘고 120일이 지난 시점인데요, 그 요건은 지난 9월에 채워졌습니다.
+            <span class="lab">구조 포인트</span>① 관계절 «que l'on désigne… par BBNJ» → 선행사 '조약'을 먼저 내뱉고 '~라고 부르는 조약인데'로 뒤에서. ② «Ces eaux, dont personne n'assurait la gestion» → 끊고 '아무도 관리하지 않았던 곳으로'로 후치 소유(dont). ③ 동격 «c'est-à-dire l'océan au-delà des ZEE» → '즉/공해란 ~밖 바다'로 풀어서.
+          </div>
+        </details>
+      </section>
+
+      <!-- 3. 한→불 문장구역 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">3</span> <span class="dir ab">한→불</span> 문장구역 지문</div>
+        <div class="sect-sub">한국어의 긴 <b>전치 수식</b>은 프랑스어에서 <b>관계절·분사</b>로 뒤로 넘긴다. <span class="goal">→ 후치 재구성</span></div>
+        <div class="avue src-ko">
+          한국은 지난해 3월,<span class="cut"></span> 동아시아 국가 가운데 처음으로<span class="cut"></span> 이 공해 조약을 비준했습니다.<span class="cut"></span> 전 세계에서는 21번째 비준국입니다.<span class="cut"></span> 삼면이 바다로 둘러싸여<span class="cut"></span> 수산업과 해운에 크게 의존하는 한국에게,<span class="cut"></span> 공해 질서의 재편은<span class="cut"></span> 결코 남의 일이 아닙니다.<span class="cut"></span> 정부는,<span class="cut"></span> 해양유전자원의 이익을 공정하게 나누고<span class="cut"></span> 공해 보호구역을 지정하도록 한 이번 조약이,<span class="cut"></span> 지속가능한 바다를 위한 전환점이 될 것이라고 평가했습니다.<span class="cut"></span> 한국은 또한 2028년,<span class="cut"></span> 칠레와 함께<span class="cut"></span> 제4차 유엔 해양회의를 개최합니다.<span class="cut"></span> 2030년 지속가능발전목표 시한을 앞두고 열리는<span class="cut"></span> 마지막 해양회의인 만큼,<span class="cut"></span> 개최국으로서 구체적인 공해 보호 계획을 내놓아야 한다는 목소리가 커지고 있습니다.
+        </div>
+        <div class="task">▷ 끊어읽기로 프랑스어 통역 → 녹음 후 모범과 대조</div>
+        <details class="reveal"><summary>모범 문장구역 (français) 보기</summary>
+          <div class="rv"><span class="fr">La Corée du Sud a ratifié ce traité sur la haute mer en mars dernier, devenant ainsi le premier pays d'Asie de l'Est à le faire, et le vingt-et-unième au niveau mondial. Pour un pays entouré par la mer sur trois côtés et fortement dépendant de la pêche et du transport maritime, la refonte de la gouvernance de la haute mer est tout sauf une affaire lointaine. Le gouvernement a salué cet accord, qui prévoit un partage équitable des bénéfices tirés des ressources génétiques marines ainsi que la création d'aires marines protégées, y voyant un tournant vers un océan durable. La Corée accueillera par ailleurs, en 2028, aux côtés du Chili, la quatrième Conférence des Nations unies sur l'Océan. Comme il s'agira de la dernière conférence avant l'échéance de 2030 fixée pour les Objectifs de développement durable, les appels se multiplient pour que le pays hôte présente un plan concret de protection de la haute mer.</span>
+            <span class="lab">구조 포인트</span>① «처음으로 비준했습니다» → 결과를 분사로 후치 «…, devenant ainsi le premier pays…». ② 긴 전치 수식 «삼면이 바다로 둘러싸여 ~ 의존하는 한국» → 과거분사·형용사 후치 «un pays entouré par la mer… et dépendant de…». ③ «이익을 나누고 보호구역을 지정하도록 한 이번 조약» (전치 수식) → 관계절 후치 «cet accord, qui prévoit…».
+          </div>
+        </details>
+      </section>
+
+      <!-- 4. 구조 변환 클리닉 -->
+      <section class="card">
+        <div class="sect-h"><span class="n">4</span> 구조 변환 클리닉 · 관계절·후치 수식</div>
+        <div class="sect-sub">문장구역이 막히는 지점은 대개 <b>어순</b>. 오늘은 명사 뒤로 길게 붙는 <b>관계절</b>을 손에 익힌다. <span class="goal">→ 앞에서부터 밀고 가기</span></div>
+        <table class="grid conv">
+          <tr><th>프랑스어 구조</th><th>문장구역 요령</th><th>예</th></tr>
+          <tr><td>관계절 «N, qui/que…»</td><td>선행사 먼저 내뱉고 '~인데/그게 ~'로 뒤에서 이어 붙임</td><td>un texte qui vise à… → 하나의 규범인데, ~을 목표로 하는</td></tr>
+          <tr><td>«dont» (de + 관계)</td><td>끊고 '그 N의 ~' 소유·관련을 뒤에서</td><td>ces eaux, dont personne n'assurait la gestion → 이 바다, 아무도 관리하지 않던</td></tr>
+          <tr><td>동격 «c'est-à-dire / — … —»</td><td>'즉/다시 말해', 풀어 설명</td><td>la haute mer, c'est-à-dire l'océan au-delà… → 공해, 즉 ~밖 바다</td></tr>
+          <tr><td>형용 분사 후치 «susceptible de / tiré de»</td><td>'~할 수 있는 / ~에서 나온' 뒤에서</td><td>activités susceptibles de nuire → 해를 끼칠 수 있는 활동</td></tr>
+          <tr><td>결과 분사 «…, devenant ainsi…»</td><td>주절 먼저, '그리하여 ~가 되며'로 이어감</td><td>a ratifié…, devenant le premier pays → 비준했고, 첫 나라가 되며</td></tr>
+          <tr><td>서수·연도 «le 21ᵉ», «en 2028»</td><td>숫자는 지체 없이 앞에서 바로 처리</td><td>le vingt-et-unième pays → 21번째 나라</td></tr>
+        </table>
+        <div class="note"><b>핵심 ·</b> 관계절은 문장구역의 최대 고비다. 프랑스어는 명사 뒤로 수식이 길게 붙지만 한국어는 앞에 붙는다. 억지로 앞으로 당기려다 문장이 꼬이면 오히려 늦어진다. 요령은 <b>선행사(핵심 명사)를 먼저 내뱉고</b>, 관계절은 '~인데/그게 ~'로 뒤에서 이어 붙이는 것. 용어 주의: <b>BBNJ = 공해(생물다양성) 조약</b>, <b>la ZEE = 배타적경제수역(EEZ)</b>, <b>l'entrée en vigueur = 발효</b>(채택 adoption과 구별), <b>ratifier = 비준하다</b>(서명 signer과 구별).</div>
+        <div class="tags">
+          <span class="tag">문장구역</span><span class="tag">해양·환경</span><span class="tag">공해조약</span><span class="tag">양방향</span><span class="tag">관계절</span>
+        </div>
+      </section>
+
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
+        <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
+          <li>n° 3 · 금리·통화정책 — BCE·한국은행 금리 인상 — 2026-07-31</li>
+          <li>n° 2 · 기후 협상 — COP30 · 한국 2035 NDC — 2026-07-30</li>
+          <li>n° 1 · AI 규제 — EU AI Act · 한국 AI 기본법 — 2026-07-29</li>
+        </ul>
+      </details>
+
+      <div class="foot">© 2026 HENNI · Traduction à vue. All rights reserved.<br>매일 아침 새 지문으로 자동 갱신됩니다. 모범 문장구역은 학습용 예시입니다.</div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="side">
+      <div class="tool">
+        <h3>🔎 사전 검색</h3>
+        <div class="lookRow">
+          <input class="lookInput" id="look" placeholder="한국어·프랑스어 단어" autocomplete="off">
+          <button class="goBtn" id="goBtn">찾기</button>
+        </div>
+        <div id="dictResult"></div>
+        <p class="hint">💡 한↔불 자동 판별. 지문에서 <b>단어를 드래그</b>하면 바로 검색·낭독돼요.</p>
+        <div class="extlab">외부 사전에서 열기</div>
+        <div class="dictgrid">
+          <a href="#" data-d="naver" target="_blank" rel="noopener">네이버<br><span style="font-size:10px;color:var(--muted)">불한사전</span></a>
+          <a href="#" data-d="larousse" target="_blank" rel="noopener">Larousse<br><span style="font-size:10px;color:var(--muted)">불불사전</span></a>
+          <a href="#" data-d="reverso" target="_blank" rel="noopener">Reverso<br><span style="font-size:10px;color:var(--muted)">불↔한 예문</span></a>
+          <a href="#" data-d="deepl" target="_blank" rel="noopener">DeepL<br><span style="font-size:10px;color:var(--muted)">불↔한</span></a>
+          <a href="#" data-d="wr" target="_blank" rel="noopener">WordRef<br><span style="font-size:10px;color:var(--muted)">불↔영</span></a>
+          <a href="#" data-d="conjug" target="_blank" rel="noopener">Le Conjugueur<br><span style="font-size:10px;color:var(--muted)">동사변화</span></a>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>✍️ 오늘의 정리</h3>
+        <div class="sum-lab">막혔던 구조/표현 적기</div>
+        <textarea class="sum" id="sumKo" placeholder="예) 관계절 후치, dont, c'est-à-dire 동격, 결과 분사 devenant…"></textarea>
+        <div class="counter" id="cKo">0자</div>
+        <div class="sum-lab">한 문장 다시 써 보기 (불어)</div>
+        <textarea class="sum" id="sumFr" placeholder="Reformulez une phrase du texte…"></textarea>
+        <div class="counter" id="cFr">0 mots</div>
+        <div class="saved" id="savedMsg">✓ 입력 내용은 이 브라우저에 자동 저장돼요</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div id="popup"></div>
+
+<script>
+(function(){
+  var d=new Date();
+  var wd=['일','월','화','수','목','금','토'][d.getDay()];
+  document.getElementById('today').textContent=d.getFullYear()+'. '+(d.getMonth()+1)+'. '+d.getDate()+'. ('+wd+')';
+
+  // ===== 낭독 (Web Speech API) =====
+  var synth=window.speechSynthesis;
+  var ttsRate=document.getElementById('ttsRate');
+  var ttsVoiceSel=document.getElementById('ttsVoice');
+  var frVoices=[];
+  function loadVoices(){
+    var all=synth?synth.getVoices():[];
+    frVoices=all.filter(function(v){return /^fr/i.test(v.lang);});
+    ttsVoiceSel.innerHTML='';
+    if(!frVoices.length){ var o=document.createElement('option'); o.textContent='(프랑스어 음성 없음)'; ttsVoiceSel.appendChild(o); return; }
+    frVoices.forEach(function(v,i){ var o=document.createElement('option'); o.value=i; o.textContent=v.name.replace(/\(.*?\)/,'').trim()+' · '+v.lang; ttsVoiceSel.appendChild(o); });
+    var pref=-1;
+    frVoices.forEach(function(v,i){ if(pref<0 && /(enhanced|premium|siri|thomas|am[ée]lie|aur[ée]lie|audrey|google)/i.test(v.name)) pref=i; });
+    if(pref>=0) ttsVoiceSel.value=pref;
+  }
+  if(synth){ loadVoices(); synth.onvoiceschanged=loadVoices; }
+  function speak(text,el){
+    if(!synth){ alert('이 브라우저는 음성 읽기를 지원하지 않아요. Chrome이나 Safari에서 열어 주세요.'); return; }
+    synth.cancel();
+    document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');});
+    var u=new SpeechSynthesisUtterance(text);
+    u.lang='fr-FR';
+    u.rate=parseFloat(ttsRate&&ttsRate.value)||0.9;
+    var vi=parseInt(ttsVoiceSel&&ttsVoiceSel.value,10);
+    if(frVoices[vi]) u.voice=frVoices[vi];
+    if(el){ el.classList.add('speaking'); u.onend=function(){ el.classList.remove('speaking'); }; }
+    synth.speak(u);
+  }
+  var pB=document.getElementById('ttsPlay'), sB=document.getElementById('ttsStop');
+  if(pB) pB.addEventListener('click',function(){
+    var ps=[].slice.call(document.querySelectorAll('.body-fr p'));
+    speak(ps.map(function(p){return p.textContent;}).join('  '));
+  });
+  if(sB) sB.addEventListener('click',function(){ if(synth) synth.cancel(); document.querySelectorAll('.body-fr p.speaking').forEach(function(p){p.classList.remove('speaking');}); });
+  document.querySelectorAll('.body-fr p').forEach(function(p){
+    p.style.cursor='pointer'; p.title='클릭하면 이 지문을 읽어줘요';
+    p.addEventListener('click',function(){
+      if((window.getSelection().toString()||'').trim()) return;
+      speak(p.textContent,p);
+    });
+  });
+
+  function urls(w){
+    var q=encodeURIComponent(w.trim());
+    return {
+      naver:'https://dict.naver.com/frkodict/#/search?query='+q,
+      larousse:'https://www.larousse.fr/dictionnaires/francais/'+q,
+      reverso:'https://context.reverso.net/traduction/francais-coreen/'+q,
+      wr:'https://www.wordreference.com/fren/'+q,
+      papago:'https://papago.naver.com/?sk=fr&tk=ko&st='+q,
+      deepl:'https://www.deepl.com/translator#fr/ko/'+q,
+      conjug:'https://leconjugueur.lefigaro.fr/conjugaison/verbe/'+q+'.html'
+    };
+  }
+  function currentWord(){ return document.getElementById('look').value || ''; }
+  document.querySelectorAll('.dictgrid a').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var w=currentWord();
+      if(!w.trim()){ e.preventDefault(); document.getElementById('look').focus(); return; }
+      a.href=urls(w)[a.dataset.d];
+    });
+  });
+
+  var pop=document.getElementById('popup');
+  function hidePop(){ pop.style.display='none'; }
+  document.addEventListener('mouseup',function(e){
+    if(pop.contains(e.target)) return;
+    var sel=(window.getSelection().toString()||'').trim();
+    if(sel.length>0 && sel.length<60){
+      var u=urls(sel);
+      pop.innerHTML='<a href="#" id="popSpeak">🔊 듣기</a>'+
+                    '<a href="#" id="popLook">🔎 풀이</a>'+
+                    '<a href="'+u.naver+'" target="_blank" rel="noopener">네이버</a>'+
+                    '<a href="'+u.larousse+'" target="_blank" rel="noopener">불불</a>';
+      pop.style.display='inline-flex';
+      document.getElementById('look').value=sel;
+      var ps2=document.getElementById('popSpeak');
+      if(ps2) ps2.addEventListener('click',function(ev){ev.preventDefault();speak(sel);});
+      var pl=document.getElementById('popLook');
+      if(pl) pl.addEventListener('click',function(ev){ev.preventDefault();hidePop();lookup();});
+      var r=window.getSelection().getRangeAt(0).getBoundingClientRect();
+      pop.style.left=(window.scrollX+r.left)+'px';
+      pop.style.top=(window.scrollY+r.bottom+6)+'px';
+    } else { hidePop(); }
+  });
+  document.addEventListener('scroll',hidePop,true);
+
+  var id=document.getElementById('article').dataset.articleid;
+  var ko=document.getElementById('sumKo'), fr=document.getElementById('sumFr');
+  var cKo=document.getElementById('cKo'), cFr=document.getElementById('cFr');
+  function load(){ try{ ko.value=localStorage.getItem('tavKo_'+id)||''; fr.value=localStorage.getItem('tavFr_'+id)||''; }catch(e){} }
+  function count(){
+    cKo.textContent=ko.value.length+'자';
+    var m=fr.value.trim()? fr.value.trim().split(/\s+/).length:0;
+    cFr.textContent=m+' mots';
+  }
+  function save(){ try{ localStorage.setItem('tavKo_'+id,ko.value); localStorage.setItem('tavFr_'+id,fr.value);}catch(e){} count(); }
+  ko.addEventListener('input',save); fr.addEventListener('input',save);
+  load(); count();
+
+  // ===== in-page KO<->FR dictionary =====
+  var dr=document.getElementById('dictResult');
+  var goBtn=document.getElementById('goBtn');
+  var NL=String.fromCharCode(10);
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function nl2br(s){return esc(s).split(NL).join('<br>');}
+  function isKorean(s){return /[가-힣]/.test(s);}
+  function show(html,cls){ dr.className=cls||''; dr.style.display='block'; dr.innerHTML=html; }
+
+  async function viaAI(w){
+    if(!(window.cowork && window.cowork.askClaude)) throw new Error('noai');
+    var lines=['너는 프랑스어↔한국어 통역 학습 사전이야. 다음 단어/표현의 뜻을 정확히 알려줘: "'+w+'"',
+      '아래 형식으로만, 마크다운 기호 없이 답해.',
+      '표제어: (원형/기본형)','품사: ','뜻: (핵심 뜻 1~2개)',
+      '예문: (프랑스어 문장) — (한국어 번역)','통역 팁: 연어·오용 주의 한 줄.'];
+    var r=await window.cowork.askClaude(lines.join(NL),[]);
+    var txt=(typeof r==='string')?r:(r&&(r.text||r.output||r.completion||r.result||r.content))||'';
+    if(txt && typeof txt!=='string') txt=(txt[0]&&txt[0].text)?txt[0].text:JSON.stringify(txt);
+    if(!txt) throw new Error('empty');
+    show('<span class="term">'+esc(w)+'</span>'+nl2br(txt));
+    return true;
+  }
+  async function gGloss(w, ko2){
+    var sl=ko2?'ko':'fr', tl=ko2?'fr':'ko';
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&sl='+sl+'&tl='+tl+'&q='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var main=''; if(Array.isArray(j[0])) j[0].forEach(function(s){ if(s&&s[0]) main+=s[0]; });
+    var groups=[];
+    if(Array.isArray(j[1])) j[1].forEach(function(e){ var pos=e[0]||'', t=Array.isArray(e[1])?e[1].slice(0,6):[]; if(t.length) groups.push({pos:pos,terms:t}); });
+    return {main:main, groups:groups};
+  }
+  function cleanWiki(s){
+    for(var i=0;i<3;i++) s=s.replace(/\{\{[^{}]*\}\}/g,' ');
+    return s.replace(/\[\[([^\]|]*)\|([^\]]*)\]\]/g,'$2').replace(/\[\[([^\]]*)\]\]/g,'$1').replace(/'''?/g,'').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+  }
+  async function wiktFr(w){
+    var url='https://fr.wiktionary.org/w/api.php?action=parse&prop=wikitext&format=json&formatversion=2&redirects=1&origin=*&page='+encodeURIComponent(w);
+    var res=await fetch(url); if(!res.ok) throw new Error('net');
+    var j=await res.json();
+    var wt=j&&j.parse&&j.parse.wikitext; if(!wt) throw new Error('empty');
+    var fr=wt.split(/==\s*\{\{langue\|fr\}\}\s*==/)[1];
+    if(fr){ fr=fr.split(/\n==\s*\{\{langue\|/)[0]; } else { fr=wt; }
+    var posMap={nom:'명사',verbe:'동사',adjectif:'형용사',adverbe:'부사','nom propre':'고유명사','locution nominale':'명사 표현','locution verbale':'동사 표현',pronom:'대명사','préposition':'전치사',interjection:'감탄사'};
+    var lines=fr.split('\n'), out=[], cur=null;
+    lines.forEach(function(ln){
+      var mh=ln.match(/^===+\s*\{\{S\|([^|}]+)/);
+      if(mh){ var p=mh[1].trim(); if(posMap[p]){ cur={pos:posMap[p],defs:[]}; out.push(cur); } else { cur=null; } return; }
+      if(cur){ var md=ln.match(/^#\s+(.*)/); if(md){ var t=cleanWiki(md[1]); if(t.length>1 && cur.defs.length<3) cur.defs.push(t); } }
+    });
+    out=out.filter(function(o){return o.defs.length;});
+    if(!out.length) throw new Error('nodef');
+    return out.slice(0,2);
+  }
+  async function viaOnline(w){
+    var ko2=isKorean(w);
+    var g=null, wk=null;
+    try{ g=await gGloss(w,ko2); }catch(e){}
+    if(!ko2){ try{ wk=await wiktFr(w); }catch(e){} }
+    if((!g||!g.main) && (!wk||!wk.length)) throw new Error('none');
+    var dirLab=ko2?'한국어 → 프랑스어':'프랑스어 → 한국어';
+    var html='<span class="term">'+esc(w)+'</span>';
+    if(wk&&wk.length){
+      html+='<div style="font-size:11px;color:var(--muted);">프랑스어 뜻풀이 · Wiktionnaire</div>';
+      wk.slice(0,2).forEach(function(b){
+        html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(b.pos)+'</b></div>';
+        b.defs.forEach(function(df){ html+='<div style="font-size:12.5px;margin:2px 0 0 6px;line-height:1.5;">· '+esc(df)+'</div>'; });
+      });
+    }
+    if(g&&g.main){
+      var topcss=(wk&&wk.length)?'margin-top:11px;padding-top:9px;border-top:1px solid var(--line);':'';
+      html+='<div style="'+topcss+'font-size:11px;color:var(--muted);margin-bottom:4px;">'+dirLab+'</div>';
+      html+='<div style="font-size:15px;">'+esc(g.main)+'</div>';
+      g.groups.forEach(function(gr){ html+='<div style="font-size:12.5px;margin-top:5px;"><b style="color:var(--accent)">'+esc(gr.pos)+'</b> '+esc(gr.terms.join(', '))+'</div>'; });
+    }
+    html+='<div style="margin-top:11px;"><a href="'+urls(w).naver+'" target="_blank" rel="noopener" style="font-size:12px;">네이버 불한사전에서 자세히 보기 →</a></div>';
+    show(html);
+    return true;
+  }
+  async function lookup(){
+    var w=(document.getElementById('look').value||'').trim();
+    if(!w){ document.getElementById('look').focus(); return; }
+    show('「'+w+'」 찾는 중…','loading'); goBtn.disabled=true;
+    try{ await viaAI(w); }
+    catch(e1){
+      try{ await viaOnline(w); }
+      catch(e2){
+        var u=urls(w);
+        show('<span class="term">'+esc(w)+'</span>지금 이 화면에서는 자동 검색이 막혀 있어요. 아래 사전에서 바로 열 수 있어요:<br>'+
+             '<a href="'+u.reverso+'" target="_blank" rel="noopener">Reverso 불↔한</a> · '+
+             '<a href="'+u.papago+'" target="_blank" rel="noopener">Papago</a> · '+
+             '<a href="'+u.larousse+'" target="_blank" rel="noopener">Larousse</a>');
+      }
+    }
+    goBtn.disabled=false;
+  }
+  goBtn.addEventListener('click',lookup);
+  document.getElementById('look').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){ e.preventDefault(); lookup(); }
+  });
+})();
+</script>
+</body>
+</html>
