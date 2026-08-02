@@ -1,8 +1,8 @@
 <!DOCTYPE html><script type="application/json" id="cowork-artifact-meta">
 {
-  "name": "Le Mot Juste",
+  "name": "Le mot juste",
   "schemaVersion": 1,
-  "description": "매일 한 묶음 통역 정밀도 훈련 페이지 'Le mot juste' — ① 혼동 어휘 쌍 ② 파생어 용법(오늘의 가족) ③ 기관 약어↔정식명(한/불) ④ 불어적 표현·연어(낭독). 낭독·사전·요약 기능 포함. n°2 2026-07-30: prévoir/prévenir 등 · tenir 가족 · 유엔계열/유럽 기구 · à l'aune de 외."
+  "description": "매일 한 묶음, 통역 정밀도 훈련 페이지. ① 혼동 어휘 쌍(probabilité≠possibilité 식) ② 파생어 용법(engager/engagement 식 지배·뉘앙스) ③ 기관 약어↔정식명(한/불) ④ 불어적 표현·연어(낭독). 낭독·사전·요약 기능 포함."
 }
 </script>
 <html lang="ko">
@@ -111,19 +111,6 @@
   #popup a:hover{background:rgba(255,255,255,.28);}
   details.arch{margin-top:18px;}
   details.arch summary{cursor:pointer;font-size:14px;color:var(--muted);}
-  .archLink{cursor:pointer;color:var(--accent);text-decoration:none;}
-  .archLink:hover{text-decoration:underline;}
-  #archOverlay{position:fixed;inset:0;z-index:200;background:rgba(20,28,36,.55);display:none;padding:24px 14px;overflow:auto;}
-  #archOverlay.open{display:block;}
-  .archModal{max-width:900px;margin:0 auto;background:var(--paper);border-radius:14px;box-shadow:0 12px 44px rgba(0,0,0,.32);overflow:hidden;}
-  .archModal .bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--accent);color:#fff;padding:11px 16px;}
-  .archModal .bar .t{font-family:var(--serif);font-size:15.5px;font-weight:700;line-height:1.3;}
-  .archClose{border:none;background:rgba(255,255,255,.18);color:#fff;border-radius:8px;padding:6px 13px;font-size:14px;cursor:pointer;font-weight:600;white-space:nowrap;}
-  .archClose:hover{background:rgba(255,255,255,.32);}
-  .archBody{padding:16px 18px 24px;}
-  .archBody .card{box-shadow:none;border:1px solid var(--line);}
-  .archBody .card:first-child{border:none;padding-top:4px;}
-  .archLoading{padding:44px 16px;text-align:center;color:var(--muted);font-size:14px;line-height:1.7;}
   .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;line-height:1.6;}
 </style>
 </head>
@@ -137,21 +124,21 @@
   <div class="layout">
     <!-- MAIN -->
     <main>
-      <article class="card" id="article" data-articleid="2026-08-01-mot-juste-03">
-        <div class="kicker">n° 3 · 매일 새 묶음</div>
-        <h1 class="title">기한은 지연이 아니다 — Le piège des faux-amis</h1>
+      <article class="card" id="article" data-articleid="2026-07-29-mot-juste-01">
+        <div class="kicker">n° 1 · 매일 새 묶음</div>
+        <h1 class="title">헷갈리면 지는 말들 — Trouver le mot juste</h1>
         <div class="meta">
-          <span><b>오늘의 4묶음</b> 혼동 어휘 쌍 · 파생어 용법(porter 가족) · 기관 약어↔정식명 · 불어적 표현</span>
+          <span><b>오늘의 4묶음</b> 혼동 어휘 쌍 · 파생어 용법 · 기관 약어↔정식명 · 불어적 표현</span>
           <span><b>방향</b> 한↔불</span>
         </div>
         <div class="why">
           <span class="lab">왜 이 페이지? ·</span>
-          <b>délai</b>는 영어 <i>delay</i>(지연=<b>retard</b>)가 아니라 <b>기한·유예 기간</b>입니다. <b>sensible</b>(민감한)은 <i>sensible</i>(분별 있는=<b>sensé</b>)이 아니고, <b>supporter</b>는 「지지하다」(=soutenir)가 아니라 「견디다」예요. 가짜 친구(faux-amis)에 걸리면 뜻이 통째로 뒤집힙니다. 통역은 "비슷한 말"이 아니라 <b>딱 맞는 말</b>로 결정됩니다.
+          통역은 "비슷한 말"이 아니라 <b>딱 맞는 말</b>로 결정됩니다. probabilité와 possibilité를 섞고, engagement을 늘 '약속'으로만 옮기고, 기관 약어에서 멈칫하면 핵심이 흐려져요. 매일 한 묶음씩 <b>정밀도</b>를 올립니다.
         </div>
         <div class="task">오늘 루틴 (15–20분)</div>
         <div class="routine">
           <span>① 혼동 쌍 소리 내 구분 + 예문 1개씩</span>
-          <span>② porter 가족, 지배(전치사)까지 통째로</span>
+          <span>② engager 가족, 지배(전치사)까지 통째로</span>
           <span>③ 기관 약어 가리고 정식명 말하기 (한·불)</span>
           <span>④ 불어적 표현 10개 낭독 3회</span>
         </div>
@@ -164,49 +151,44 @@
         <table class="grid pairs">
           <tr><th>쌍</th><th>뜻 구분</th><th>예문 / 팁</th></tr>
           <tr>
-            <td><span class="a">délai</span> <span class="vs">vs</span> <span class="b">retard</span></td>
-            <td><span class="a">기한·유예 기간</span>(faux-ami, ≠delay) / <span class="b">지연·연착</span></td>
-            <td>dans les <b>délais</b> (기한 내에) · un <b>délai</b> de paiement (지불 유예) · accuser un <b>retard</b> (지연되다)</td>
+            <td><span class="a">probabilité</span> <span class="vs">vs</span> <span class="b">possibilité</span></td>
+            <td><span class="a">확률</span>(발생 가능성·통계) / <span class="b">가능성·여지</span>(선택지)</td>
+            <td>une forte <b>probabilité</b> que… (~할 확률이 높다) · avoir la <b>possibilité</b> de… (~할 수 있다)</td>
           </tr>
           <tr>
-            <td><span class="a">sensible</span> <span class="vs">vs</span> <span class="b">sensé</span></td>
-            <td><span class="a">민감한·뚜렷한</span>(faux-ami, ≠sensible) / <span class="b">분별 있는·합리적인</span></td>
-            <td>une hausse <b>sensible</b> (뚜렷한 상승) · un sujet <b>sensible</b> (민감한 사안) · une décision <b>sensée</b> (분별 있는 결정)</td>
+            <td><span class="a">an</span> <span class="vs">vs</span> <span class="b">année</span></td>
+            <td><span class="a">해</span>(시점·횟수, 셈) / <span class="b">한 해</span>(지속·내용)</td>
+            <td>il a 30 <b>ans</b> · une <b>année</b> difficile / tout au long de l'<b>année</b></td>
           </tr>
           <tr>
-            <td><span class="a">attendre</span> <span class="vs">vs</span> <span class="b">s'attendre à</span></td>
-            <td><span class="a">기다리다</span> / <span class="b">(~을) 예상하다</span></td>
-            <td><b>attendre</b> les résultats (결과를 기다리다) · <b>s'attendre à</b> une baisse / à ce que + <i>subj.</i> (하락을 예상하다)</td>
+            <td><span class="a">amener</span> <span class="vs">vs</span> <span class="b">apporter</span></td>
+            <td><span class="a">(사람·동물) 데려오다</span> / <span class="b">(사물) 가져오다</span></td>
+            <td>mener↔porter. <b>amener</b> un ami · <b>apporter</b> un document (반대: emmener / emporter)</td>
           </tr>
           <tr>
-            <td><span class="a">douter de</span> <span class="vs">vs</span> <span class="b">se douter de</span></td>
-            <td><span class="a">의심하다·확신 못 하다</span> / <span class="b">짐작·예감하다</span></td>
-            <td>je <b>doute</b> de sa sincérité (진정성을 의심한다) · je <b>me doutais</b> qu'il refuserait (거절할 줄 짐작했다)</td>
+            <td><span class="a">gouvernement</span> <span class="vs">vs</span> <span class="b">gouvernance</span></td>
+            <td><span class="a">정부·내각</span>(주체) / <span class="b">거버넌스</span>(운영 체계)</td>
+            <td>le <b>gouvernement</b> a démissionné · la <b>gouvernance</b> mondiale / d'entreprise</td>
           </tr>
           <tr>
-            <td><span class="a">sécurité</span> <span class="vs">vs</span> <span class="b">sûreté</span></td>
-            <td><span class="a">안전·치안</span>(위험 예방) / <span class="b">안전성·방호·안보</span>(고의적 위협 차단)</td>
-            <td>la <b>sûreté</b> nucléaire (원자력 안전) vs la <b>sécurité</b> nucléaire (핵 안보) · la <b>sûreté</b> de l'État (국가 안보)</td>
+            <td><span class="a">éventuellement</span> <span class="vs">vs</span> <span class="b">finalement</span></td>
+            <td><span class="a">경우에 따라·혹시</span>(가능성) / <span class="b">결국</span></td>
+            <td>faux-ami! éventuellement ≠ eventually. <b>éventuellement</b> reporter · <b>finalement</b> annulé</td>
           </tr>
           <tr>
-            <td><span class="a">efficace</span> <span class="vs">vs</span> <span class="b">efficient</span></td>
-            <td><span class="a">효과적인</span>(결과를 냄) / <span class="b">효율적인</span>(적은 자원으로)</td>
-            <td>une mesure <b>efficace</b> (효과 있는 조치) · une gestion <b>efficiente</b> (효율적 운영) · efficacité ≠ efficience</td>
+            <td><span class="a">compréhensif</span> <span class="vs">vs</span> <span class="b">compréhensible</span></td>
+            <td><span class="a">이해심 많은</span>(너그러운) / <span class="b">이해 가능한</span></td>
+            <td>un chef <b>compréhensif</b> · une réaction <b>compréhensible</b></td>
           </tr>
           <tr>
-            <td><span class="a">chiffre</span> <span class="vs">vs</span> <span class="b">nombre</span></td>
-            <td><span class="a">수치·숫자</span>(구체·통계) / <span class="b">수·개수</span>(추상·양)</td>
-            <td>les <b>chiffres</b> du chômage (실업 통계) · le <b>chiffre</b> d'affaires (매출액) · un grand <b>nombre</b> de… (다수의)</td>
+            <td><span class="a">davantage</span> <span class="vs">vs</span> <span class="b">d'avantage(s)</span></td>
+            <td><span class="a">더 (많이)</span>(부사) / <span class="b">이점의</span>(de+avantage)</td>
+            <td>travailler <b>davantage</b> · tirer <b>d'avantages</b> de la réforme</td>
           </tr>
           <tr>
-            <td><span class="a">l'économie</span> <span class="vs">vs</span> <span class="b">les économies</span></td>
-            <td><span class="a">경제</span> / <span class="b">절약·저축</span>(복수)</td>
-            <td>relancer l'<b>économie</b> (경제를 살리다) · faire des <b>économies</b> (절약하다) · réaliser des <b>économies</b> d'énergie</td>
-          </tr>
-          <tr>
-            <td><span class="a">la politique</span> <span class="vs">vs</span> <span class="b">le politique</span></td>
-            <td><span class="a">정책·정치(활동)</span> / <span class="b">정치 영역·정치권</span>(추상)</td>
-            <td>la <b>politique</b> monétaire (통화 정책) · le retour du <b>politique</b> (정치의 귀환) · le <b>politique</b> et l'économique</td>
+            <td><span class="a">dénoncer</span> <span class="vs">vs</span> <span class="b">annoncer</span></td>
+            <td><span class="a">고발·규탄하다, (조약을) 파기하다</span> / <span class="b">발표하다</span></td>
+            <td><b>dénoncer</b> un accord (파기/규탄) · <b>annoncer</b> une mesure (발표)</td>
           </tr>
         </table>
       </section>
@@ -214,48 +196,47 @@
       <!-- 2. 파생어 용법 -->
       <section class="card">
         <div class="sect-h"><span class="n">2</span> 파생어 용법 · la famille du jour</div>
-        <div class="sect-sub">오늘의 가족: <b>porter</b>. 접두사·지배(전치사)에 따라 뜻이 확 갈리는 핵심 동사 — 통째로 외운다. <span class="goal">→ porter 계열 지배·뉘앙스</span></div>
+        <div class="sect-sub">오늘의 가족: <b>engager</b>. 파생형마다 <b>지배(전치사)</b>와 뜻이 갈린다 — 통째로 외운다. <span class="goal">→ engager/engagement 차이</span></div>
         <table class="grid fam">
           <tr><th>형태 · 지배</th><th>뜻</th><th>예문</th></tr>
-          <tr><td>porter qch</td><td>나르다·입다·지니다 / (책임을) 짊어지다</td><td>porter un projet (프로젝트를 이끌다) · porter plainte (고소하다)</td></tr>
-          <tr><td>porter <b>sur</b></td><td>~을 다루다·~에 관한 것이다</td><td>le débat porte sur la réforme (토론은 개혁을 다룬다)</td></tr>
-          <tr><td>porter qch <b>à</b></td><td>~까지 끌어올리다·높이다</td><td>porter le taux à 3 % (금리를 3%로 인상하다)</td></tr>
-          <tr><td>la portée</td><td>사정거리 / 영향력·파급력 / 의미</td><td>une décision d'une grande portée (파급력 큰 결정) · à la portée de tous (누구나 할 수 있는)</td></tr>
-          <tr><td>apporter qch</td><td>(사물을) 가져오다·제공하다·기여하다</td><td>apporter son soutien / une réponse (지지/답을 내놓다)</td></tr>
-          <tr><td>rapporter</td><td>되가져오다 / 보고·전하다 / 수익을 내다</td><td>rapporter des faits (사실을 전하다) · un placement qui rapporte (수익 나는 투자)</td></tr>
-          <tr><td>se rapporter <b>à</b></td><td>~에 관련되다·해당하다</td><td>ces chiffres se rapportent à 2025 (이 수치는 2025년치다)</td></tr>
-          <tr><td>supporter</td><td>견디다·감당하다·지탱하다 (faux-ami!)</td><td>supporter les coûts (비용을 감당하다) · 「지지하다」는 <b>soutenir</b></td></tr>
-          <tr><td>comporter qch</td><td>포함하다·수반하다</td><td>le projet comporte des risques (위험을 수반한다)</td></tr>
-          <tr><td>reporter · se comporter</td><td>연기하다·이월하다 / 처신하다·(수치가) 움직이다</td><td>reporter une réunion (회의를 연기하다) · le titre se comporte bien (주가가 선방한다)</td></tr>
+          <tr><td>engager qn</td><td>고용·채용하다</td><td>engager un consultant / un avocat</td></tr>
+          <tr><td>engager qch</td><td>착수하다, (자금을) 투입하다</td><td>engager des réformes · engager des fonds</td></tr>
+          <tr><td>engager sa responsabilité</td><td>책임을 지다·걸다</td><td>le gouvernement engage sa responsabilité</td></tr>
+          <tr><td>s'engager <b>à</b> + inf.</td><td>~하기로 약속·다짐하다</td><td>l'État s'engage à réduire ses émissions</td></tr>
+          <tr><td>s'engager <b>dans</b></td><td>~에 뛰어들다·개입하다</td><td>s'engager dans un conflit / une voie</td></tr>
+          <tr><td>s'engager <b>auprès de / au côté de</b></td><td>~와 연대하다·편에 서다</td><td>s'engager au côté de l'Ukraine</td></tr>
+          <tr><td>un engagement</td><td>약속·공약 / 참여 / 개입 / (계약) 의무</td><td>prendre un engagement · l'engagement citoyen · les engagements financiers</td></tr>
+          <tr><td>engagé(e) (adj.)</td><td>참여적인 / 투입된·진행 중인</td><td>un artiste engagé · la transition engagée</td></tr>
+          <tr><td>dégager / se dégager (de)</td><td>도출하다 / (책임을) 벗다</td><td>dégager un consensus · se dégager de ses obligations</td></tr>
         </table>
-        <div class="note"><b>통역 팁 ·</b> <b>supporter</b>는 대표적 가짜 친구 — 영어 <i>support</i>(지지)가 아니라 <b>「견디다·감당하다」</b>이고, 「지지하다」는 <b>soutenir</b>·「부담하다」는 <b>prendre en charge</b>가 자연스럽다. <b>porter sur</b>(~을 다루다)는 회의·문서 통역에서 매우 잦으니 「~에 관한 것이다」로 반사적으로 나오게. 명사 <b>la portée</b>는 「영향력·파급력」으로 옮기면 격이 산다(la portée de l'accord = 협정의 파급력).</div>
+        <div class="note"><b>통역 팁 ·</b> <b>engagement</b>을 무조건 '약속'으로 굳히지 말 것. 문맥이 <b>공약</b>(prendre un engagement), <b>참여</b>(engagement associatif), <b>개입</b>(engagement militaire), <b>재정 의무</b>(engagements financiers)로 갈린다. 동사 s'engager는 <b>à + 동사</b>(약속)와 <b>dans + 명사</b>(개입)를 반드시 구분.</div>
       </section>
 
       <!-- 3. 기관 약어 ↔ 정식명 -->
       <section class="card">
         <div class="sect-h"><span class="n">3</span> 기관 약어 ↔ 정식명 · sigles</div>
-        <div class="sect-sub">약어를 보면 정식 프랑스어명과 한국어명이 <b>즉시</b> 나와야 한다. 오늘은 금융·통상·지역기구·한국 관련 중심. 왼쪽 약어를 가리고 말해 보기. <span class="goal">→ 조직·기관 이름</span></div>
+        <div class="sect-sub">약어를 보면 정식 프랑스어명과 한국어명이 <b>즉시</b> 나와야 한다. 왼쪽 약어를 가리고 말해 보기. <span class="goal">→ 조직·기관 이름</span></div>
         <table class="grid orgs">
           <tr><th>약어</th><th>정식명 (français)</th><th>한국어</th></tr>
-          <tr><td>BRI</td><td>Banque des règlements internationaux</td><td>국제결제은행(BIS)</td></tr>
-          <tr><td>BAsD</td><td>Banque asiatique de développement</td><td>아시아개발은행(ADB)</td></tr>
-          <tr><td>BERD</td><td>Banque européenne pour la reconstruction et le développement</td><td>유럽부흥개발은행(EBRD)</td></tr>
-          <tr><td>BEI</td><td>Banque européenne d'investissement</td><td>유럽투자은행(EIB)</td></tr>
-          <tr><td>CNUCED</td><td>Conférence des Nations unies sur le commerce et le développement</td><td>유엔무역개발회의(UNCTAD)</td></tr>
-          <tr><td>OPEP</td><td>Organisation des pays exportateurs de pétrole</td><td>석유수출국기구(OPEC)</td></tr>
-          <tr><td>AIE</td><td>Agence internationale de l'énergie</td><td>국제에너지기구(IEA)</td></tr>
-          <tr><td>APEC</td><td>Coopération économique pour l'Asie-Pacifique</td><td>아시아·태평양경제협력체</td></tr>
-          <tr><td>MERCOSUR</td><td>Marché commun du Sud</td><td>남미공동시장</td></tr>
-          <tr><td>ACEUM</td><td>Accord Canada–États-Unis–Mexique</td><td>미국·멕시코·캐나다협정(USMCA, 舊 ALENA)</td></tr>
-          <tr><td>CEDEAO</td><td>Communauté économique des États de l'Afrique de l'Ouest</td><td>서아프리카경제공동체(ECOWAS)</td></tr>
-          <tr><td>CCG</td><td>Conseil de coopération du Golfe</td><td>걸프협력회의(GCC)</td></tr>
-          <tr><td>KOICA</td><td>Agence coréenne de coopération internationale</td><td>한국국제협력단</td></tr>
-          <tr><td>RPDC</td><td>République populaire démocratique de Corée</td><td>조선민주주의인민공화국(북한)</td></tr>
-          <tr><td>ROC</td><td>République de Corée</td><td>대한민국</td></tr>
+          <tr><td>ONU</td><td>Organisation des Nations unies</td><td>국제연합(유엔)</td></tr>
+          <tr><td>FMI</td><td>Fonds monétaire international</td><td>국제통화기금</td></tr>
+          <tr><td>BM</td><td>Banque mondiale</td><td>세계은행</td></tr>
+          <tr><td>OMC</td><td>Organisation mondiale du commerce</td><td>세계무역기구</td></tr>
+          <tr><td>OCDE</td><td>Organisation de coopération et de développement économiques</td><td>경제협력개발기구</td></tr>
+          <tr><td>OMS</td><td>Organisation mondiale de la santé</td><td>세계보건기구</td></tr>
+          <tr><td>OIT</td><td>Organisation internationale du travail</td><td>국제노동기구</td></tr>
+          <tr><td>FAO</td><td>Organisation des Nations unies pour l'alimentation et l'agriculture</td><td>유엔식량농업기구</td></tr>
+          <tr><td>OTAN</td><td>Organisation du traité de l'Atlantique Nord</td><td>북대서양조약기구(나토)</td></tr>
+          <tr><td>UE</td><td>Union européenne</td><td>유럽연합</td></tr>
+          <tr><td>CPI</td><td>Cour pénale internationale</td><td>국제형사재판소</td></tr>
+          <tr><td>CIJ</td><td>Cour internationale de justice</td><td>국제사법재판소</td></tr>
+          <tr><td>AIEA</td><td>Agence internationale de l'énergie atomique</td><td>국제원자력기구</td></tr>
+          <tr><td>HCR</td><td>Haut-Commissariat des Nations unies pour les réfugiés</td><td>유엔난민기구</td></tr>
+          <tr><td>UNICEF</td><td>Fonds des Nations unies pour l'enfance</td><td>유엔아동기금</td></tr>
         </table>
         <div class="task">▷ 셀프 테스트: 약어 열을 손으로 가리고, 한국어명만 보며 정식 프랑스어명 말하기</div>
-        <details class="reveal"><summary>발음 · 함정 체크</summary>
-          <div class="rv"><b>AIE</b>(국제에너지기구)와 <b>AIEA</b>(국제원자력기구)를 절대 혼동 말 것 — 끝의 A 하나 차이. <b>BAsD</b>(아시아)와 <b>BAD</b>(=Banque africaine de développement, 아프리카)도 구분. <b>ACEUM</b>은 캐나다에서 <b>AEUMC</b>로도 쓰며 옛 <b>ALENA</b>(북미자유무역협정)의 후신. <b>OPEP</b> [ɔ-pɛp]는 한 단어처럼, <b>MERCOSUR</b>는 통상 원어 그대로. 한국은 정식으로 <b>République de Corée</b>(대한민국), 북한은 <b>RPDC</b> 또는 <b>Corée du Nord</b>.</div>
+        <details class="reveal"><summary>발음 함정 체크</summary>
+          <div class="rv">l'<b>ONU</b> [o-ny], l'<b>OMS</b>, l'<b>OTAN</b> [o-tɑ̃] — 모두 관사 le/l'와 함께. <b>OCDE</b>는 끝에 <b>économiques</b>(복수)까지. <b>AIEA</b>는 「a-i-ə-a」 알파벳으로 또박또박. 한국어로는 나토=OTAN(불) / NATO(영) 혼동 주의.</div>
         </details>
       </section>
 
@@ -272,28 +253,26 @@
           <span class="tts-lab">목소리 <select id="ttsVoice"></select></span>
         </div>
         <table class="grid chunk body-fr">
-          <tr><td><p style="margin:0">faire face à</p></td><td>~에 직면하다, ~에 대처하다</td></tr>
-          <tr><td><p style="margin:0">mettre en œuvre</p></td><td>(정책·계획을) 시행·이행하다</td></tr>
-          <tr><td><p style="margin:0">mettre en place</p></td><td>마련하다, 도입·구축하다</td></tr>
-          <tr><td><p style="margin:0">dans la foulée</p></td><td>그 여세를 몰아, 곧이어</td></tr>
-          <tr><td><p style="margin:0">d'ores et déjà</p></td><td>이미 지금부터, 현시점에 이미</td></tr>
-          <tr><td><p style="margin:0">en la matière</p></td><td>이 분야에서, 이와 관련하여</td></tr>
-          <tr><td><p style="margin:0">au fil du temps</p></td><td>시간이 흐르며, 점차</td></tr>
-          <tr><td><p style="margin:0">faute de quoi</p></td><td>그러지 않으면</td></tr>
-          <tr><td><p style="margin:0">par le biais de</p></td><td>~을 통해, ~을 매개로</td></tr>
-          <tr><td><p style="margin:0">être à même de</p></td><td>~할 수 있다, ~할 능력이 있다</td></tr>
+          <tr><td><p style="margin:0">faire le point sur</p></td><td>~을 점검·정리하다</td></tr>
+          <tr><td><p style="margin:0">mettre l'accent sur</p></td><td>~을 강조하다</td></tr>
+          <tr><td><p style="margin:0">tirer la sonnette d'alarme</p></td><td>경종을 울리다</td></tr>
+          <tr><td><p style="margin:0">prendre acte de</p></td><td>~을 (공식적으로) 인지·유념하다</td></tr>
+          <tr><td><p style="margin:0">être à la hauteur de</p></td><td>~에 부응하다·걸맞다</td></tr>
+          <tr><td><p style="margin:0">faire l'objet de</p></td><td>~의 대상이 되다</td></tr>
+          <tr><td><p style="margin:0">s'inscrire dans la durée</p></td><td>장기적으로 이어지다·지속되다</td></tr>
+          <tr><td><p style="margin:0">le cas échéant</p></td><td>필요한 경우에는</td></tr>
+          <tr><td><p style="margin:0">force est de constater que…</p></td><td>~임을 인정할 수밖에 없다</td></tr>
+          <tr><td><p style="margin:0">peu ou prou</p></td><td>대략, 거의</td></tr>
         </table>
         <div class="tags">
           <span class="tag">혼동 어휘</span><span class="tag">파생어</span><span class="tag">기관명</span><span class="tag">불어적 표현</span>
         </div>
       </section>
 
-      <details class="arch" open>
-        <summary>지난 편 아카이브 (제목을 클릭하면 이 페이지에서 바로 열려요)</summary>
+      <details class="arch">
+        <summary>지난 편 아카이브 (매일 아침 자동으로 쌓입니다)</summary>
         <ul style="font-size:13.5px;line-height:1.95;margin:10px 0 0;padding-left:18px;">
-          <li><a class="archLink" data-date="2026-08-01">n°3 — délai/retard·sensible/sensé 등 · porter 가족 · 금융·통상/지역·한국 기구 · faire face à 외 — 2026-08-01</a></li>
-          <li><a class="archLink" data-date="2026-07-30">n°2 — prévoir/prévenir·taux/tarif 등 · tenir 가족 · 유엔계열/유럽·사법 기구 · à l'aune de 외 — 2026-07-30</a></li>
-          <li><a class="archLink" data-date="2026-07-29">n°1 — probabilité/possibilité 등 · engager 가족 · 국제기구 약어 · faire le point 외 — 2026-07-29</a></li>
+          <li>(첫 편) 혼동 쌍·engager 가족·국제기구 약어 — 2026-07-29</li>
         </ul>
       </details>
 
@@ -324,7 +303,7 @@
       <div class="tool">
         <h3>✍️ 오늘의 정리</h3>
         <div class="sum-lab">가장 헷갈렸던 쌍/표현 3개 적기</div>
-        <textarea class="sum" id="sumKo" placeholder="예) prévoir vs prévenir, tenir à/compte de, GIEC 정식명…"></textarea>
+        <textarea class="sum" id="sumKo" placeholder="예) probabilité vs possibilité, s'engager à/dans, OCDE 정식명…"></textarea>
         <div class="counter" id="cKo">0자</div>
         <div class="sum-lab">프랑스어로 예문 하나 만들어 보기</div>
         <textarea class="sum" id="sumFr" placeholder="Faites une phrase avec le mot du jour…"></textarea>
@@ -336,13 +315,6 @@
 </div>
 
 <div id="popup"></div>
-
-<div id="archOverlay">
-  <div class="archModal">
-    <div class="bar"><span class="t" id="archTitle">지난 편</span><button class="archClose" id="archClose">✕ 닫기</button></div>
-    <div class="archBody" id="archBody"></div>
-  </div>
-</div>
 
 <script>
 (function(){
@@ -550,42 +522,6 @@
   document.getElementById('look').addEventListener('keydown',function(e){
     if(e.key==='Enter'){ e.preventDefault(); lookup(); }
   });
-})();
-
-// ===== 지난 편 아카이브 인페이지 리더 =====
-(function(){
-  var BASE='https://euihyunehr-cmyk.github.io/lecture-du-jour/mot-juste/archive/';
-  var ov=document.getElementById('archOverlay');
-  var body=document.getElementById('archBody');
-  var titleEl=document.getElementById('archTitle');
-  if(!ov||!body) return;
-  function close(){ ov.classList.remove('open'); body.innerHTML=''; document.body.style.overflow=''; }
-  function open(date,label){
-    ov.classList.add('open'); document.body.style.overflow='hidden';
-    titleEl.textContent=label||date;
-    body.innerHTML='<div class="archLoading">「'+date+'」 불러오는 중…</div>';
-    fetch(BASE+date+'.html',{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('http'); return r.text(); })
-      .then(function(html){
-        var doc=new DOMParser().parseFromString(html,'text/html');
-        var main=doc.querySelector('main');
-        if(!main){ body.innerHTML='<div class="archLoading">내용을 찾을 수 없어요.</div>'; return; }
-        main.querySelectorAll('.tts-bar, details.arch, .foot, script').forEach(function(e){e.remove();});
-        main.querySelectorAll('[id]').forEach(function(e){e.removeAttribute('id');});
-        body.innerHTML=main.innerHTML;
-        ov.scrollTop=0;
-      })
-      .catch(function(){
-        body.innerHTML='<div class="archLoading">아직 저장된 지난 편이 없거나 불러오지 못했어요.<br>'+
-          '<a href="'+BASE+date+'.html" target="_blank" rel="noopener">새 탭에서 열어 보기 →</a></div>';
-      });
-  }
-  document.querySelectorAll('.archLink').forEach(function(a){
-    a.addEventListener('click',function(e){ e.preventDefault(); open(a.dataset.date, a.textContent.trim()); });
-  });
-  var cb=document.getElementById('archClose');
-  if(cb) cb.addEventListener('click',close);
-  ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
-  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && ov.classList.contains('open')) close(); });
 })();
 </script>
 </body>
